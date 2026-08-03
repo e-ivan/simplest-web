@@ -31,7 +31,7 @@
         <maven.javadoc.skip>false</maven.javadoc.skip>
 
         <!--版本依赖管理 (Spring Boot 4.0.x compatible versions)-->
-        <springdoc-openapi.version>2.8.6</springdoc-openapi.version>
+        <springdoc-openapi.version>2.8.17</springdoc-openapi.version>
         <knife4j.version>4.5.0</knife4j.version>
         <ip2region.version>3.3.6</ip2region.version>
         <mybatis-plus.version>3.5.7</mybatis-plus.version>
@@ -218,6 +218,28 @@
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
             <version>${knife4j.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springdoc</groupId>
+                    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springdoc</groupId>
+                    <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springdoc</groupId>
+                    <artifactId>springdoc-openapi-webmvc-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springdoc</groupId>
+                    <artifactId>springdoc-openapi-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springdoc</groupId>
+                    <artifactId>springdoc-openapi-ui</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
