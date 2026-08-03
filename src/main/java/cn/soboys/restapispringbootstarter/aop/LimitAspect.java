@@ -1,45 +1,41 @@
 package cn.soboys.restapispringbootstarter.aop;
 
 import cn.soboys.restapispringbootstarter.annotation.Limit;
+import cn.soboys.restapispringbootstarter.auth.UserContextSupport;
 import cn.soboys.restapispringbootstarter.config.RestApiProperties;
 import cn.soboys.restapispringbootstarter.enums.LimitType;
 import cn.soboys.restapispringbootstarter.exception.LimitAccessException;
 import cn.soboys.restapispringbootstarter.utils.HttpUserAgent;
 import cn.soboys.restapispringbootstarter.utils.Strings;
 import com.google.common.collect.ImmutableList;
-import lombok.RequiredArgsConstructor;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.lang.reflect.Method;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
- * @author 公众号 程序员三时
- * @version 1.0
- * @date 2023/7/2 11:28
- * @webSite https://github.com/coder-amiao
+ * @author E_Ivan
+ * @since 2025/2/16 17:02
  */
-@Slf4j
 @Aspect
 @Component
-public class LimitAspect  extends BaseAspectSupport{
+@Slf4j
+public class LimitAspect extends BaseAspectSupport {
     @Resource
-    private  RedisTemplate<String, Object> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
-    @Autowired
+    @Resource
     private RestApiProperties.RedisProperties redisProperties;
 
     public LimitAspect() {
@@ -59,25 +55,24 @@ public class LimitAspect  extends BaseAspectSupport{
         String ip = HttpUserAgent.getIpAddr();
         int limitPeriod = limitAnnotation.period();
         int limitCount = limitAnnotation.count();
-        switch (limitType) {
-            case IP:
-                key = ip;
-                break;
-            case CUSTOMER:
-                key = limitAnnotation.key();
-                break;
-            default:
-                key = StringUtils.upperCase(method.getName());
+        String userId = null;
+        key = switch (limitType) {
+            case IP -> ip;
+            case CUSTOMER -> limitAnnotation.key();
+            case USER -> {
+                userId = UserContextSupport.getInstance().userId(false);
+                yield Optional.ofNullable(userId).map(id -> "USER_LIMIT:" + id).orElse(ip);
+            }
+        };
+        if (redisProperties != null && StringUtils.isNotBlank(redisProperties.getKeyPrefix())) {
+            key = redisProperties.getKeyPrefix() + Strings.COLON + key;
         }
-        if(redisProperties!=null&&StringUtils.isNotBlank(redisProperties.getKeyPrefix())){
-            key=redisProperties.getKeyPrefix()+Strings.COLON+key;
-        }
-        ImmutableList<String> keys = ImmutableList.of(StringUtils.join(limitAnnotation.prefix() + Strings.UNDER_LINE, key, ip));
+        ImmutableList<String> keys = ImmutableList.of(StringUtils.join(limitAnnotation.prefix() + Strings.UNDER_LINE, key));
         String luaScript = buildLuaScript();
         RedisScript<Long> redisScript = new DefaultRedisScript<>(luaScript, Long.class);
         Long count = redisTemplate.execute(redisScript, keys, limitCount, limitPeriod);
-        if (count != null && count.intValue() <= limitCount) {
-            log.info("IP:{} 第 {} 次访问key为 {}，描述为 [{}] 的接口", ip, count, keys, name);
+        if (Objects.nonNull(count) && count.intValue() <= limitCount) {
+            log.info("IP:{} user:{} 第 {} 次访问key为 {}，描述为 [{}] 的接口", ip, userId, count, keys, name);
             return point.proceed();
         } else {
             log.error("key为 {}，描述为 [{}] 的接口访问超出频率限制", keys, name);

@@ -4,22 +4,14 @@ import cn.soboys.restapispringbootstarter.authorization.LoginAuthorization;
 import cn.soboys.restapispringbootstarter.authorization.UrlMatcher;
 import cn.soboys.restapispringbootstarter.authorization.UserJwtToken;
 import cn.soboys.restapispringbootstarter.config.RestApiProperties;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.dromara.hutool.core.map.MapUtil;
 import org.dromara.hutool.core.text.StrUtil;
-
-import org.dromara.hutool.extra.spring.SpringUtil;
 import org.springframework.beans.factory.BeanCreationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 
 /**
  * @author 公众号 程序员三时
@@ -31,10 +23,10 @@ import java.util.Map;
 public class JwtTokenInterceptor implements HandlerInterceptor {
 
 
-    @Autowired
+    @Resource
     private UserJwtToken userJwtToken;
 
-    @Autowired
+    @Resource
     private LoginAuthorization loginAuthorization;
 
 

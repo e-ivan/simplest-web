@@ -1,7 +1,6 @@
 package cn.soboys.restapispringbootstarter.config;
 
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -84,7 +83,9 @@ public class RestApiProperties {
         /**
          * ip2region.db 文件路径，默认： classpath:ip2region/ip2region.db
          */
-        private String location = "classpath:ip2region/ip2region.xdb";
+        private String location = "classpath:ip2region/ip2region_v4.xdb";
+
+        private String locationV6 = "classpath:ip2region/ip2region_v6.xdb";
 
     }
 

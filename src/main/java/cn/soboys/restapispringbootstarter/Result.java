@@ -5,6 +5,7 @@ import cn.soboys.restapispringbootstarter.domain.BaseObj;
 import cn.soboys.restapispringbootstarter.i18n.DefaultMessage;
 import cn.soboys.restapispringbootstarter.i18n.I18NMessage;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.hutool.core.collection.CollUtil;
@@ -15,9 +16,6 @@ import org.dromara.hutool.extra.spring.SpringUtil;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
-import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -39,7 +37,6 @@ public class Result<T> extends BaseObj{
     public static final String ERROR_CODE = "FAIL";
     public static final String MSG = "操作成功";
     public static final String ERROR_MSG = "操作失败";
-    private static final String TIMESTAMP = DateUtil.formatNow();
 
     private static final String I18N_HEADER = "Lang";
 
@@ -58,7 +55,7 @@ public class Result<T> extends BaseObj{
 
     private String requestId= IdUtil.nanoId(20);
 
-    private String timestamp = TIMESTAMP;
+    private String timestamp = DateUtil.formatNow();
 
 
     private T data;

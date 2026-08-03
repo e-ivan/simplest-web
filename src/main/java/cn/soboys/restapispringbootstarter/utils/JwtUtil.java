@@ -1,11 +1,14 @@
 package cn.soboys.restapispringbootstarter.utils;
 
-import cn.soboys.restapispringbootstarter.authorization.UserSign;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.MacAlgorithm;
+import jakarta.xml.bind.DatatypeConverter;
 
-import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
-import java.security.Key;
+import javax.crypto.SecretKey;
+import java.util.Base64;
 import java.util.Date;
 
 /**
@@ -26,33 +29,39 @@ public class JwtUtil {
         Date exp = new Date(now.getTime() + ttlMillis * 1000);
 
 
-        String result = Jwts.builder()
-                .setSubject(subject) //设置主题
-                .setIssuer(issue) //发行者
-                .setId(issue)//jwtID
-                .setExpiration(exp)//设置过期日期
+        //设置主题
+        //发行者
+        //jwtID
+        //设置过期日期
+        //主题，可以包含用户信息
+        //加密算法
+        //对载荷进行压缩
+        return Jwts.builder()
+                .subject(subject) //设置主题
+                .issuer(issue) //发行者
+                .id(issue)//jwtID
+                .expiration(exp)//设置过期日期
                 .claim("user", claim)//主题，可以包含用户信息
-                .signWith(getSignatureAlgorithm(), getAuthKey())//加密算法
-                .compressWith(CompressionCodecs.DEFLATE).compact();//对载荷进行压缩
-        return result;
+                .signWith(getSignedKey(), getSignatureAlgorithm())//加密算法
+                .compressWith(Jwts.ZIP.DEF).compact();
     }
 
 
     public static String createJWT(String subject, String issue, Object claim,
-                                   long ttlMillis, SignatureAlgorithm signatureAlgorithm, String key) {
+                                   long ttlMillis, MacAlgorithm macAlgorithm, String key) {
 
         //过期时间
         Date now = new Date();
         Date exp = new Date(now.getTime() + ttlMillis * 1000);
 
         String result = Jwts.builder()
-                .setSubject(subject) //设置主题
-                .setIssuer(issue) //发行者
-                .setId(issue)//jwtID
-                .setExpiration(exp) //设置过期日期
+                .subject(subject) //设置主题
+                .issuer(issue) //发行者
+                .id(issue)//jwtID
+                .expiration(exp)//设置过期日期
                 .claim("user", claim)//主题，可以包含用户信息
-                .signWith(signatureAlgorithm, key)//加密算法
-                .compressWith(CompressionCodecs.DEFLATE).compact();//对载荷进行压缩
+                .signWith(getSignedKey(key), macAlgorithm)//加密算法
+                .compressWith(Jwts.ZIP.DEF).compact();//对载荷进行压缩
 
         return result;
     }
@@ -60,37 +69,26 @@ public class JwtUtil {
 
     // 解析jwt
     public static Jws<Claims> parseJWT(String jwt) {
-        Jws<Claims> claims = Jwts.parser().setSigningKey(getSignedKey())
-                .parseClaimsJws(jwt);
-//        try {
-//            claims = Jwts.parser().setSigningKey(getSignedKey())
-//                    .parseClaimsJws(jwt);
-//        } catch (Exception ex) {
-//            claims = null;
-//        }
-        return claims;
+        return Jwts.parser().verifyWith(getSignedKey())
+                .build().parseSignedClaims(jwt);
     }
 
-    public static Jws<Claims> parseJWT(String jwt, Key key) {
-        Jws<Claims> claims = Jwts.parser().setSigningKey(key)
-                .parseClaimsJws(jwt);
-        return claims;
+    public static Jws<Claims> parseJWT(String jwt, SecretKey key) {
+        return Jwts.parser().verifyWith(key)
+                .build().parseSignedClaims(jwt);
     }
 
 
     //获取主题信息
     public static Claims getClaims(String jwt) {
-        Claims claims = Jwts.parser().setSigningKey(getSignedKey())
-                .parseClaimsJws(jwt).getBody();
-
-        return claims;
+        return Jwts.parser().verifyWith(getSignedKey())
+                .build().parseSignedClaims(jwt).getPayload();
     }
 
 
-    public static Claims getClaims(String jwt, Key key) {
-        Claims claims = Jwts.parser().setSigningKey(key)
-                .parseClaimsJws(jwt).getBody();
-        return claims;
+    public static Claims getClaims(String jwt, SecretKey key) {
+        return Jwts.parser().verifyWith(key)
+                .build().parseSignedClaims(jwt).getPayload();
     }
 
 
@@ -99,12 +97,13 @@ public class JwtUtil {
      *
      * @return Key
      */
-    private static Key getSignedKey() {
-        byte[] apiKeySecretBytes = DatatypeConverter
-                .parseBase64Binary(getAuthKey());
-        Key signingKey = new SecretKeySpec(apiKeySecretBytes,
-                getSignatureAlgorithm().getJcaName());
-        return signingKey;
+    private static SecretKey getSignedKey() {
+        return getSignedKey(getAuthKey());
+    }
+
+    private static SecretKey getSignedKey(String key) {
+        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(key);
+        return Keys.hmacShaKeyFor(Base64.getDecoder().decode(apiKeySecretBytes));
     }
 
 
@@ -123,8 +122,8 @@ public class JwtUtil {
      *
      * @return
      */
-    private static SignatureAlgorithm getSignatureAlgorithm() {
-        return SignatureAlgorithm.HS256;
+    private static MacAlgorithm getSignatureAlgorithm() {
+        return Jwts.SIG.HS256;
     }
 
 

@@ -1,6 +1,6 @@
 package cn.soboys.restapispringbootstarter.utils;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import jakarta.annotation.Resource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -8,7 +8,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;

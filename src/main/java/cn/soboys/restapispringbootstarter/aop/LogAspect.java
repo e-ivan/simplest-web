@@ -9,7 +9,9 @@ import cn.soboys.restapispringbootstarter.log.LogDataSource;
 import cn.soboys.restapispringbootstarter.log.LogEntry;
 import cn.soboys.restapispringbootstarter.log.LogFileDefaultDataSource;
 import cn.soboys.restapispringbootstarter.utils.HttpUserAgent;
+import cn.soboys.restapispringbootstarter.utils.Ip2RegionUtil;
 import cn.soboys.restapispringbootstarter.utils.RequestUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -18,8 +20,10 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.dromara.hutool.core.date.StopWatch;
 import org.dromara.hutool.core.exception.ExceptionUtil;
 import org.dromara.hutool.core.text.StrUtil;
+import org.dromara.hutool.core.util.ObjUtil;
 import org.dromara.hutool.json.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -27,9 +31,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 /**
  * @author 公众号 程序员三时
@@ -41,7 +44,7 @@ import java.lang.reflect.Method;
 @Aspect
 @Slf4j
 @EnableAsync
-public class LogAspect extends BaseAspectSupport {
+public class LogAspect {
 
     @Autowired
     private RestApiProperties.LoggingProperties loggingProperties;
@@ -55,7 +58,8 @@ public class LogAspect extends BaseAspectSupport {
     }
 
 
-    private long currentTime = 0L;
+    private final static ThreadLocal<StopWatch> KEY_CACHE = new ThreadLocal<>();
+
 
     /**
      * 配置环绕通知,使用在方法logPointcut()上注册的切入点
@@ -64,7 +68,9 @@ public class LogAspect extends BaseAspectSupport {
      */
     @Around("logPointcut()")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
-        currentTime = System.currentTimeMillis();
+        StopWatch stopWatch = new StopWatch();
+        KEY_CACHE.set(stopWatch);
+        stopWatch.start();
         Object result = joinPoint.proceed();
         LogEntry logBean = analyResult(result);
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
@@ -84,10 +90,20 @@ public class LogAspect extends BaseAspectSupport {
      */
     @AfterThrowing(pointcut = "logPointcut()", throwing = "e")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable e) {
-
-        LogEntry logBean = new LogEntry(LogTypeEnum.ERROR.name(), System.currentTimeMillis() - currentTime);
+        LogEntry logBean = new LogEntry(LogTypeEnum.ERROR.name(), getAndStopWatch());
         logBean.setExceptionDetail(ExceptionUtil.stacktraceToString(e));
 
+    }
+
+    protected long getAndStopWatch() {
+        StopWatch stopWatch = KEY_CACHE.get();
+        long time = 0;
+        if (ObjUtil.isNotNull(stopWatch)) {
+            stopWatch.stop();
+            time = stopWatch.getTotalTimeMillis();
+            KEY_CACHE.remove();
+        }
+        return time;
     }
 
 
@@ -98,13 +114,13 @@ public class LogAspect extends BaseAspectSupport {
      * @param result
      * @return
      */
-    private LogEntry analyResult(Object result) {
+    protected LogEntry analyResult(Object result) {
         //判断返回结果
-        LogEntry logBean = new LogEntry(LogTypeEnum.INFO.name(), System.currentTimeMillis() - currentTime);
+        LogEntry logBean = new LogEntry(LogTypeEnum.INFO.name(), getAndStopWatch());
 
         if (result instanceof Result) {
             Result res = (Result) result;
-            if (!res.getSuccess() || res.getCode() != Result.SUCCESS_CODE) {
+            if (!res.getSuccess() || !Objects.equals(res.getCode(), Result.SUCCESS_CODE)) {
                 logBean.setLogType(LogTypeEnum.ERROR.name());
                 logBean.setExceptionDetail(res.getMsg());
                 logBean.setRequestId(res.getRequestId());
@@ -116,11 +132,11 @@ public class LogAspect extends BaseAspectSupport {
     }
 
 
-    private void saveLog(JoinPoint joinPoint, LogEntry logBean) {
+    protected void saveLog(JoinPoint joinPoint, LogEntry logBean) {
         try {
             MethodSignature signature = (MethodSignature) joinPoint.getSignature();
             Method method = signature.getMethod();
-            Log logAnnotation = method.getAnnotation(cn.soboys.restapispringbootstarter.log.Log.class);
+            Log logAnnotation = method.getAnnotation(Log.class);
             String methodName = signature.getName();
             //注解入参
             logBean.setDescription(logAnnotation.value());
@@ -133,7 +149,7 @@ public class LogAspect extends BaseAspectSupport {
             String ip = HttpUserAgent.getIpAddr();
             logBean.setRequestIp(ip);
             if (logAnnotation.ipCity()) {
-                logBean.setAddress(HttpUserAgent.getIpToCityInfo(ip));
+                logBean.setAddress(Ip2RegionUtil.getIpToCityInfo(ip));
             }
             if (!logAnnotation.apiResult()) {
                 logBean.setResult("");
@@ -142,11 +158,11 @@ public class LogAspect extends BaseAspectSupport {
             logBean.setBrowser(HttpUserAgent.getDeviceBrowser());
             logBean.setDevice(HttpUserAgent.getDevice());
 
-            /**
+            /*
              * 从切面拿参数有可能因为参数名和实体对象命一致 json序列化时出现jpa循环加载 所以从request获取
              */
             JSON params = RequestUtil.getRequestParams(req);
-            logBean.setParams(params == null ? null : params);
+            logBean.setParams(params);
 
             if (loggingProperties != null && StrUtil.isNotEmpty(loggingProperties.getLogDataSourceClass())) {
 
@@ -158,8 +174,8 @@ public class LogAspect extends BaseAspectSupport {
                 fileDefaultDataSource.save(logBean);
             }
 
-        } catch (Exception e) {
-            log.error("日志AOP封装log对象异常:", ExceptionUtil.stacktraceToString(e));
+        } catch (Throwable e) {
+            log.error("日志AOP封装log对象异常", e);
         }
     }
 }

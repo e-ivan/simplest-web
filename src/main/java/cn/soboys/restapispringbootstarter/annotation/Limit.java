@@ -9,11 +9,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @author 公众号 程序员三时
- * @version 1.0
- * @date 2023/7/2 11:22
- * @webSite https://github.com/coder-amiao
- * 接口限流
+ * @author E_Ivan
+ * @since 2025/2/16 16:58
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

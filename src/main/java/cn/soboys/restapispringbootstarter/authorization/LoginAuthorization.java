@@ -1,7 +1,8 @@
 package cn.soboys.restapispringbootstarter.authorization;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author 公众号 程序员三时
@@ -14,10 +15,11 @@ public interface LoginAuthorization {
 
     /**
      * 登录授权验证 通过后才能进行下一步操作
+     *
      * @param request
      * @param response
      * @param handler
      * @return
      */
-    public Boolean authorization(HttpServletRequest request, HttpServletResponse response, Object handler);
+    Boolean authorization(HttpServletRequest request, HttpServletResponse response, Object handler);
 }

@@ -1,11 +1,12 @@
 package cn.soboys.restapispringbootstarter.authorization;
 
 
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.MacAlgorithm;
+import jakarta.xml.bind.DatatypeConverter;
 
-import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
-import java.security.Key;
+import javax.crypto.SecretKey;
+import java.util.Base64;
 
 /**
  * @author 公众号 程序员三时
@@ -17,15 +18,17 @@ public interface UserSign {
 
     /**
      * 自定义签名
+     *
      * @return
      */
-    public SignatureAlgorithm sign();
+    MacAlgorithm sign();
 
     /**
      * 自定义秘钥
+     *
      * @return
      */
-    public String AuthKey();
+    String AuthKey();
 
 
     /**
@@ -33,12 +36,9 @@ public interface UserSign {
      *
      * @return Key
      */
-    default Key getSignedKey(String key) {
-        byte[] apiKeySecretBytes = DatatypeConverter
-                .parseBase64Binary(key);
-        Key signingKey = new SecretKeySpec(apiKeySecretBytes,
-                sign().getJcaName());
-        return signingKey;
+    default SecretKey getSignedKey(String key) {
+        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(key);
+        return Keys.hmacShaKeyFor(Base64.getDecoder().decode(apiKeySecretBytes));
     }
 
 

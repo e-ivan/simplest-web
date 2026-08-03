@@ -6,22 +6,13 @@ import cn.soboys.restapispringbootstarter.ExceptionHandler;
 import cn.soboys.restapispringbootstarter.ResultHandler;
 import cn.soboys.restapispringbootstarter.aop.LimitAspect;
 import cn.soboys.restapispringbootstarter.aop.LogAspect;
-
-import cn.soboys.restapispringbootstarter.cache.SpringCacheUtil;
 import cn.soboys.restapispringbootstarter.i18n.I18NMessage;
-
-
 import cn.soboys.restapispringbootstarter.utils.RestFulTemp;
-
-
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Contact;
-import io.swagger.v3.oas.models.info.Info;
-import org.dromara.hutool.extra.spring.EnableSpringUtil;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import org.hibernate.validator.HibernateValidator;
-import org.springframework.cache.Cache;
 import org.springframework.context.annotation.Bean;
-
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -30,11 +21,8 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 
@@ -46,7 +34,6 @@ import java.util.List;
  */
 //@Configuration
 //@ConditionalOnProperty(name = "rest-api.enabled", havingValue = "true")
-@EnableSpringUtil
 public class BeanAutoConfiguration {
 
 
@@ -106,7 +93,6 @@ public class BeanAutoConfiguration {
         return new LimitAspect();
     }
 
-
     /**
      * 参数校验快速失败返回 提升性能
      */
@@ -125,7 +111,7 @@ public class BeanAutoConfiguration {
         /**
          * 第三方请求要求的默认编码
          */
-        private final Charset thirdRequest = Charset.forName("utf-8");
+        private final Charset thirdRequest = StandardCharsets.UTF_8;
 
         @Bean
         public RestTemplate restTemplate(ClientHttpRequestFactory factory) {

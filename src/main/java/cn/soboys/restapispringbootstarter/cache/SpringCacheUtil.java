@@ -1,15 +1,9 @@
 package cn.soboys.restapispringbootstarter.cache;
 
-import lombok.AllArgsConstructor;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
+import jakarta.annotation.Resource;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 
 /**
  * @author 公众号 程序员三时

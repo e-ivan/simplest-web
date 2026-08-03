@@ -1,7 +1,7 @@
 package cn.soboys.restapispringbootstarter.validator;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import java.math.BigDecimal;
 
 /**

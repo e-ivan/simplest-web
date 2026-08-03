@@ -2,13 +2,12 @@ package cn.soboys.restapispringbootstarter;
 
 import cn.soboys.restapispringbootstarter.annotation.NoRestFulApi;
 import cn.soboys.restapispringbootstarter.config.RestApiProperties;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.hutool.core.array.ArrayUtil;
 import org.dromara.hutool.core.bean.BeanUtil;
 import org.dromara.hutool.core.text.StrUtil;
 import org.dromara.hutool.extra.spring.SpringUtil;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -17,24 +16,20 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * @author 公众号 程序员三时
- * @version 1.0
- * @date 2023/6/26 23:27
- * @webSite https://github.com/coder-amiao
+ * @author wlianghf2
+ * @date 2025/11/21 17:08
  */
 @Slf4j
 @ControllerAdvice
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-public class ResultHandler implements ResponseBodyAdvice<Object> {
+public class ResultHandler {
 
-    @Autowired
+    @Resource
     private RestApiProperties restApiProperties;
 
     /**
@@ -46,9 +41,7 @@ public class ResultHandler implements ResponseBodyAdvice<Object> {
      * @param converterType
      * @return
      */
-    @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
-
         return this.userDefineWrapResult(returnType);
     }
 
@@ -64,7 +57,6 @@ public class ResultHandler implements ResponseBodyAdvice<Object> {
      * @param response
      * @return
      */
-    @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         if (body instanceof Result) {
             return this.userDefinedResultKey((Result) body);
@@ -83,7 +75,7 @@ public class ResultHandler implements ResponseBodyAdvice<Object> {
      *
      * @return
      */
-    private Object userDefinedResultKey(Result r) {
+    protected Object userDefinedResultKey(Result r) {
         Map resultMap = new LinkedHashMap();
         if (restApiProperties != null && r != null && restApiProperties.isEnabled()) {
             String keyCode = restApiProperties.getCode();
@@ -225,10 +217,10 @@ public class ResultHandler implements ResponseBodyAdvice<Object> {
             ) {
                 if (cls.contains(cla)) {
                     flag = true;
+                    break;
                 } else {
                     flag = false;
                 }
-                break;
             }
         }
 
@@ -240,10 +232,10 @@ public class ResultHandler implements ResponseBodyAdvice<Object> {
             ) {
                 if (cls.contains(cla)) {
                     flag = false;
+                    break;
                 } else {
                     flag = true;
                 }
-                break;
             }
         }
 
@@ -257,13 +249,11 @@ public class ResultHandler implements ResponseBodyAdvice<Object> {
             String packName = bean.getClass().getPackage().getName();
             if (cls.contains(packName)) {
                 flag = true;
+                break;
             } else {
                 flag = false;
             }
-            break;
         }
         return flag;
     }
 }
-
-

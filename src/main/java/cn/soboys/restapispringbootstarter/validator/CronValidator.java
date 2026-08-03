@@ -1,11 +1,10 @@
 package cn.soboys.restapispringbootstarter.validator;
 
 
-
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.scheduling.support.CronExpression;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 
 /**
  * 校验是否为合法的 Cron表达式

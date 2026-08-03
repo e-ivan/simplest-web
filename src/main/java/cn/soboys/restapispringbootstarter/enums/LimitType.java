@@ -1,7 +1,8 @@
 package cn.soboys.restapispringbootstarter.enums;
 
 /**
- * @author kenx
+ * @author E_Ivan
+ * @since 2025/2/16 17:01
  */
 public enum LimitType {
     /**
@@ -11,5 +12,11 @@ public enum LimitType {
     /**
      * 根据 IP地址限制
      */
-    IP
+    IP,
+    /**
+     * 根据用户名限制
+     */
+    USER,
+    ;
+
 }

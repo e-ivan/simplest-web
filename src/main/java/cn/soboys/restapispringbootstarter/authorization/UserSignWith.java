@@ -1,7 +1,7 @@
 package cn.soboys.restapispringbootstarter.authorization;
 
-import io.jsonwebtoken.SignatureAlgorithm;
-import org.dromara.hutool.core.data.id.IdUtil;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.MacAlgorithm;
 
 /**
  * @author 公众号 程序员三时
@@ -12,8 +12,8 @@ import org.dromara.hutool.core.data.id.IdUtil;
 public class UserSignWith implements UserSign {
 
     @Override
-    public SignatureAlgorithm sign() {
-        return SignatureAlgorithm.HS256;
+    public MacAlgorithm sign() {
+        return Jwts.SIG.HS256;
     }
 
     //获取密钥,可以动态配置

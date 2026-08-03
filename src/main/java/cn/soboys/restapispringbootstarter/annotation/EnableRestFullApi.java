@@ -1,10 +1,8 @@
 package cn.soboys.restapispringbootstarter.annotation;
 
 import cn.soboys.restapispringbootstarter.cache.CacheAutoConfiguration;
-import cn.soboys.restapispringbootstarter.cache.RedisConfig;
 import cn.soboys.restapispringbootstarter.cache.SpringCacheConfig;
 import cn.soboys.restapispringbootstarter.config.BeanAutoConfiguration;
-
 import cn.soboys.restapispringbootstarter.config.OpenApiConfig;
 import cn.soboys.restapispringbootstarter.config.UserJwtAutoConfig;
 import cn.soboys.restapispringbootstarter.interceptor.WebMvcHandleConfig;

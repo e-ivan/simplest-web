@@ -4,8 +4,8 @@ package cn.soboys.restapispringbootstarter.validator;
 
 import org.dromara.hutool.core.text.StrUtil;
 
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
 
 /**
  * @author kenx

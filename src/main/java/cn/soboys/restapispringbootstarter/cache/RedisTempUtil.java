@@ -1,15 +1,12 @@
 package cn.soboys.restapispringbootstarter.cache;
 
+import jakarta.annotation.Resource;
 import org.dromara.hutool.extra.spring.SpringUtil;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 
-
-import javax.annotation.Resource;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 

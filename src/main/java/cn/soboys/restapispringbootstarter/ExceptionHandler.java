@@ -1,20 +1,25 @@
 package cn.soboys.restapispringbootstarter;
 
-
+import cn.soboys.restapispringbootstarter.auth.UserContextSupport;
+import cn.soboys.restapispringbootstarter.config.RestApiProperties;
 import cn.soboys.restapispringbootstarter.exception.BusinessException;
 import cn.soboys.restapispringbootstarter.exception.CacheException;
 import cn.soboys.restapispringbootstarter.exception.LimitAccessException;
+import cn.soboys.restapispringbootstarter.utils.RequestUtil;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Path;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.hutool.core.collection.CollUtil;
-import org.dromara.hutool.core.collection.ListUtil;
 import org.dromara.hutool.core.exception.ExceptionUtil;
-import org.dromara.hutool.core.stream.CollectorUtil;
 import org.dromara.hutool.core.text.StrUtil;
+import org.dromara.hutool.http.server.servlet.ServletUtil;
 import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -22,41 +27,18 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import java.util.*;
 
 /**
- * @author 公众号 程序员三时
- * @version 1.0
- * @date 2023/6/26 16:44
- * @webSite https://github.com/coder-amiao
+ * @author E_Ivan
+ * @date 2024/12/15 19:21
  */
 @RestControllerAdvice
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @Slf4j
 public class ExceptionHandler {
-
-
-    /**
-     * 未知异常全局捕获
-     *
-     * @param e
-     * @return
-     */
-    @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)
-    public Result error(Exception e) {
-        log.error("未知异常{}", ExceptionUtil.stacktraceToString(e));
-        return Result.buildFailure(HttpStatus.INTERNAL_SERVER_ERROR, ExceptionUtil.stacktraceToString(e));
-    }
-
+    @Resource
+    private RestApiProperties restApiProperties;
 
     /**
      * 统一业务异常处理
@@ -71,24 +53,6 @@ public class ExceptionHandler {
 
 
     /**
-     * get 请求是没有参数体，post请求有参数体，支持表单，json，同时支持url参数
-     */
-
-    /**
-     * 验证  对象类型参数
-     */
-    @org.springframework.web.bind.annotation.ExceptionHandler(BindException.class)
-    public Result BindExceptionHandler(BindException e, HttpServletRequest request) {
-        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
-        List<String> collect = fieldErrors.stream()
-                .map(o -> o.getField() + o.getDefaultMessage())
-                .collect(Collectors.toList());
-        request.setAttribute("argument_error", CollUtil.join(collect, ";"));
-        return Result.buildFailure(HttpStatus.INVALID_ARGUMENT.getCode(),
-                StrUtil.format(HttpStatus.INVALID_ARGUMENT.getMessage(), CollUtil.join(collect, ";")));
-    }
-
-    /**
      * 验证 单个参数类型
      */
     @org.springframework.web.bind.annotation.ExceptionHandler(ConstraintViolationException.class)
@@ -99,24 +63,6 @@ public class ExceptionHandler {
             StringBuilder message = new StringBuilder();
             Path path = violation.getPropertyPath();
             String msg = message.append(((PathImpl) path).getLeafNode()).append(violation.getMessage()).toString();
-            errorList.add(msg);
-        }
-        request.setAttribute("argument_error", CollUtil.join(errorList, ";"));
-        return Result.buildFailure(HttpStatus.INVALID_ARGUMENT.getCode(),
-                StrUtil.format(HttpStatus.INVALID_ARGUMENT.getMessage(), CollUtil.join(errorList, ";")));
-    }
-
-
-    /**
-     * 验证  对象类型参数 JSON body 参数
-     */
-    @org.springframework.web.bind.annotation.ExceptionHandler(MethodArgumentNotValidException.class)
-    public Result jsonParamsException(MethodArgumentNotValidException e, HttpServletRequest request) {
-        BindingResult bindingResult = e.getBindingResult();
-        List errorList = new ArrayList<>();
-
-        for (FieldError fieldError : bindingResult.getFieldErrors()) {
-            String msg = String.format("%s%s；", fieldError.getField(), fieldError.getDefaultMessage());
             errorList.add(msg);
         }
         request.setAttribute("argument_error", CollUtil.join(errorList, ";"));
@@ -188,4 +134,63 @@ public class ExceptionHandler {
         return Result.buildFailure(HttpStatus.CACHE_EXCEPTION.getCode(),
                 StrUtil.format(HttpStatus.CACHE_EXCEPTION.getMessage() , e.getMessage()), ExceptionUtil.stacktraceToString(e));
     }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)
+    public Result error(Exception e) {
+        HttpServletRequest req = RequestUtil.getReq();
+        String uri = "空";
+        String ip = "未知";
+        if (Objects.nonNull(req)) {
+            uri = req.getRequestURI();
+            ip = ServletUtil.getClientIP(req);
+        }
+        log.error("uri:{} 未知异常 IP:{} {}", uri, ip, Optional.ofNullable(UserContextSupport.getInstance().userId(false)).map(id -> "userId:" + id).orElse(""), e);
+        return Result.buildFailure(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * 统一业务异常处理
+     *
+     * @param e
+     * @return
+     */
+    @org.springframework.web.bind.annotation.ExceptionHandler(BusinessException.class)
+    public Result businessError(BusinessException e, HttpServletRequest request) {
+        if (StrUtil.equals(restApiProperties.getCodeSuccessValue(), e.getCode())) {
+            return Result.buildSuccess(e.getMessage(), e.getData());
+        }
+        log.error("uri:{} 业务异常:{} {}", request.getRequestURI(), e.getMessage(), Optional.ofNullable(UserContextSupport.getInstance().userId(false)).map(id -> "userId:" + id).orElse(""));
+        return Result.buildFailure(e.getCode(), e.getMessage(), e.getData());
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(MethodArgumentNotValidException.class)
+    public Result jsonParamsException(MethodArgumentNotValidException e, HttpServletRequest request) {
+        return buildBindResult(e, request);
+    }
+
+    /**
+     * 验证  对象类型参数
+     */
+    @org.springframework.web.bind.annotation.ExceptionHandler(BindException.class)
+    public Result BindExceptionHandler(BindException e, HttpServletRequest request) {
+        return buildBindResult(e, request);
+    }
+
+    private static Result buildBindResult(BindException e, HttpServletRequest request) {
+        List<String> errorList = new ArrayList<>();
+        List<String> userErrorList = new ArrayList<>();
+
+        for (FieldError fieldError : e.getFieldErrors()) {
+            String msg = String.format("%s%s；", fieldError.getField(), fieldError.getDefaultMessage());
+            errorList.add(msg);
+            userErrorList.add(fieldError.getDefaultMessage());
+        }
+        request.setAttribute("argument_error", CollUtil.join(errorList, ";"));
+        if (log.isDebugEnabled()) {
+            log.debug("uri:{} 参数异常：{} {}", request.getRequestURI(), CollUtil.join(errorList, ";"), Optional.ofNullable(UserContextSupport.getInstance().userId(false)).map(id -> "userId:" + id).orElse(""));
+        }
+        return Result.buildFailure(HttpStatus.INVALID_ARGUMENT.getCode(), CollUtil.join(userErrorList, ";"));
+    }
+
+
 }
