@@ -2,9 +2,11 @@ package cn.soboys.restapispringbootstarter.auth;
 
 import cn.soboys.restapispringbootstarter.HttpStatus;
 import cn.soboys.restapispringbootstarter.exception.BusinessException;
+import cn.soboys.restapispringbootstarter.utils.CollUtil;
 import org.dromara.hutool.core.text.StrUtil;
 import org.dromara.hutool.extra.spring.SpringUtil;
 
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -35,6 +37,7 @@ public interface UserContextSupport {
     UserContextSupport EMPTY = () -> null;
 
     static UserContextSupport getInstance() {
-        return Optional.ofNullable(SpringUtil.getBean(UserContextSupport.class)).orElse(EMPTY);
+        return Optional.ofNullable(SpringUtil.getBeansOfType(UserContextSupport.class))
+                .map(Map::values).map(CollUtil::getFirst).orElse(EMPTY);
     }
 }

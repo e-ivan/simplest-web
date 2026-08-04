@@ -1,5 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-cn.soboys.restapispringbootstarter.i18n.DefaultMessage\
-
-
-

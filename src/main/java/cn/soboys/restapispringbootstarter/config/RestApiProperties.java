@@ -98,12 +98,12 @@ public class RestApiProperties {
         /**
          * 过期时间秒1天后过期=86400  (单位秒)
          */
-        private Long expiration = 86400l;
+        private Long expiration = 86400L;
 
         /**
          * 记住我过期时间 7天后过期=604800（单位秒）
          */
-        private Long rememberMeExpiration = 604800l;
+        private Long rememberMeExpiration = 604800L;
 
         /**
          * 配置用户自定义签名

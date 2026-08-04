@@ -44,7 +44,6 @@ public class WebMvcHandleConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(SpringUtil.getBean(JwtTokenInterceptor.class));
-        registry.addInterceptor(new WebInvokeTimeInterceptor()).order(0);
         WebMvcConfigurer.super.addInterceptors(registry);
     }
 
