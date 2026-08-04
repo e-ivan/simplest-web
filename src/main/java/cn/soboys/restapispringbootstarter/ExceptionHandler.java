@@ -41,18 +41,6 @@ public class ExceptionHandler {
     private RestApiProperties restApiProperties;
 
     /**
-     * 统一业务异常处理
-     *
-     * @param e
-     * @return
-     */
-    @org.springframework.web.bind.annotation.ExceptionHandler(BusinessException.class)
-    public Result error(BusinessException e) {
-        return Result.buildFailure(e.getCode(), e.getMessage());
-    }
-
-
-    /**
      * 验证 单个参数类型
      */
     @org.springframework.web.bind.annotation.ExceptionHandler(ConstraintViolationException.class)
