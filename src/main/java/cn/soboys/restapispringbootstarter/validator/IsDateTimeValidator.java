@@ -3,7 +3,7 @@ package cn.soboys.restapispringbootstarter.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.dromara.hutool.core.text.StrUtil;
+import cn.hutool.v7.core.text.StrUtil;
 
 
 /**

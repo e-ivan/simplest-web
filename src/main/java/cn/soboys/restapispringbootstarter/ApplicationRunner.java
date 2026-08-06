@@ -3,7 +3,7 @@ package cn.soboys.restapispringbootstarter;
 
 import cn.soboys.restapispringbootstarter.config.RestApiProperties;
 import lombok.extern.slf4j.Slf4j;
-import org.dromara.hutool.core.text.StrUtil;
+import cn.soboys.restapispringbootstarter.utils.StrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;

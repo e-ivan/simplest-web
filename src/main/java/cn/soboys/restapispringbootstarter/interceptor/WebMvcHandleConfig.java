@@ -1,9 +1,9 @@
 package cn.soboys.restapispringbootstarter.interceptor;
 
 import lombok.extern.slf4j.Slf4j;
-import org.dromara.hutool.core.math.NumberUtil;
-import org.dromara.hutool.core.util.EnumUtil;
-import org.dromara.hutool.extra.spring.SpringUtil;
+import cn.hutool.v7.core.math.NumberUtil;
+import cn.hutool.v7.core.util.EnumUtil;
+import cn.hutool.v7.extra.spring.SpringUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;

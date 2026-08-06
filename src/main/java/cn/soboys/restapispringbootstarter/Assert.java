@@ -1,13 +1,12 @@
 package cn.soboys.restapispringbootstarter;
 
 
+import cn.hutool.v7.core.array.ArrayUtil;
+import cn.hutool.v7.core.map.MapUtil;
+import cn.hutool.v7.core.util.ObjUtil;
 import cn.soboys.restapispringbootstarter.exception.BusinessException;
-import io.netty.util.internal.ObjectUtil;
-import org.dromara.hutool.core.array.ArrayUtil;
-import org.dromara.hutool.core.collection.CollUtil;
-import org.dromara.hutool.core.map.MapUtil;
-import org.dromara.hutool.core.text.StrUtil;
-import org.dromara.hutool.core.util.ObjUtil;
+import cn.soboys.restapispringbootstarter.utils.CollUtil;
+import cn.soboys.restapispringbootstarter.utils.StrUtil;
 
 import java.util.Map;
 import java.util.function.Supplier;

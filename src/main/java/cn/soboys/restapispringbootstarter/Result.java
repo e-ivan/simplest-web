@@ -1,18 +1,18 @@
 package cn.soboys.restapispringbootstarter;
 
 
+import cn.hutool.v7.core.data.id.IdUtil;
+import cn.hutool.v7.core.date.DateUtil;
+import cn.hutool.v7.extra.spring.SpringUtil;
 import cn.soboys.restapispringbootstarter.domain.BaseObj;
 import cn.soboys.restapispringbootstarter.i18n.DefaultMessage;
 import cn.soboys.restapispringbootstarter.i18n.I18NMessage;
+import cn.soboys.restapispringbootstarter.utils.CollUtil;
+import cn.soboys.restapispringbootstarter.utils.StrUtil;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.dromara.hutool.core.collection.CollUtil;
-import org.dromara.hutool.core.data.id.IdUtil;
-import org.dromara.hutool.core.date.DateUtil;
-import org.dromara.hutool.core.text.StrUtil;
-import org.dromara.hutool.extra.spring.SpringUtil;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 

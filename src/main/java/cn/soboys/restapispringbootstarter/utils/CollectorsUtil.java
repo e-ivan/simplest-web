@@ -1,7 +1,7 @@
 package cn.soboys.restapispringbootstarter.utils;
 
 
-import org.dromara.hutool.core.stream.CollectorUtil;
+import cn.hutool.v7.core.stream.CollectorUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;

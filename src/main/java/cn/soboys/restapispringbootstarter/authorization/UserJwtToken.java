@@ -1,16 +1,15 @@
 package cn.soboys.restapispringbootstarter.authorization;
 
+import cn.hutool.v7.core.bean.BeanUtil;
+import cn.hutool.v7.extra.spring.SpringUtil;
 import cn.soboys.restapispringbootstarter.Assert;
 import cn.soboys.restapispringbootstarter.HttpStatus;
 import cn.soboys.restapispringbootstarter.config.RestApiProperties;
 import cn.soboys.restapispringbootstarter.exception.BusinessException;
 import cn.soboys.restapispringbootstarter.utils.JwtUtil;
+import cn.soboys.restapispringbootstarter.utils.StrUtil;
 import io.jsonwebtoken.*;
-
 import lombok.Data;
-import org.dromara.hutool.core.bean.BeanUtil;
-import org.dromara.hutool.core.text.StrUtil;
-import org.dromara.hutool.extra.spring.SpringUtil;
 
 import java.util.LinkedHashMap;
 
@@ -33,9 +32,6 @@ public class UserJwtToken {
      * 用户签名
      */
     private UserSign userSign;
-
-
-
 
 
     private RestApiProperties.JwtProperties jwtProperties = SpringUtil.getBean(RestApiProperties.JwtProperties.class);
@@ -81,16 +77,18 @@ public class UserJwtToken {
                 if (StrUtil.isEmpty(key)) {
                     key = jwtProperties.getSecret();
                 }
-                claims = JwtUtil.parseJWT(userToken, userSign.getSignedKey(key));
+                claims = JwtUtil.parseJWT(userToken, key);
             } else {
                 claims = JwtUtil.parseJWT(userToken);
             }
         } catch (ExpiredJwtException e) {
             throw new BusinessException(HttpStatus.UNAUTHORIZED_EXPIRED);
-        }catch (SignatureException e) {
-            throw new BusinessException("Token验证签名密钥不正确",HttpStatus.UNAUTHORIZED.getCode());
+        } catch (SignatureException e) {
+            throw new BusinessException("Token验证签名密钥不正确", HttpStatus.UNAUTHORIZED.getCode());
         } catch (MalformedJwtException e) {
-            throw new BusinessException("Token无效或者不存在",HttpStatus.UNAUTHORIZED.getCode());
+            throw new BusinessException("Token无效或者不存在", HttpStatus.UNAUTHORIZED.getCode());
+        } catch (Exception e) {
+            throw new BusinessException("Token解析异常", HttpStatus.UNAUTHORIZED.getCode());
         }
         LinkedHashMap linkedHashMap = claims.getBody().get("user", LinkedHashMap.class);
         return BeanUtil.toBean(linkedHashMap, returnCls);
@@ -137,16 +135,18 @@ public class UserJwtToken {
                 if (StrUtil.isEmpty(key)) {
                     key = jwtProperties.getSecret();
                 }
-                claimsJws = JwtUtil.parseJWT(jwt, userSign.getSignedKey(key));
+                claimsJws = JwtUtil.parseJWT(jwt, key);
             } else {
                 claimsJws = JwtUtil.parseJWT(jwt);
             }
         } catch (ExpiredJwtException e) {
             throw new BusinessException(HttpStatus.UNAUTHORIZED_EXPIRED);
-        }catch (SignatureException e) {
-            throw new BusinessException("Token验证签名密钥不正确",HttpStatus.UNAUTHORIZED.getCode());
+        } catch (SignatureException e) {
+            throw new BusinessException("Token验证签名密钥不正确", HttpStatus.UNAUTHORIZED.getCode());
         } catch (MalformedJwtException e) {
-            throw new BusinessException("Token无效或者不存在",HttpStatus.UNAUTHORIZED.getCode());
+            throw new BusinessException("Token无效或者不存在", HttpStatus.UNAUTHORIZED.getCode());
+        } catch (Exception e) {
+            throw new BusinessException("Token解析异常", HttpStatus.UNAUTHORIZED.getCode());
         }
         return claimsJws;
     }
@@ -167,16 +167,18 @@ public class UserJwtToken {
                 if (StrUtil.isEmpty(key)) {
                     key = jwtProperties.getSecret();
                 }
-                claims = JwtUtil.getClaims(jwt, userSign.getSignedKey(key));
+                claims = JwtUtil.getClaims(jwt, key);
             } else {
                 claims = JwtUtil.getClaims(jwt);
             }
         } catch (ExpiredJwtException e) {
             throw new BusinessException(HttpStatus.UNAUTHORIZED_EXPIRED);
         } catch (SignatureException e) {
-            throw new BusinessException("Token验证签名密钥不正确",HttpStatus.UNAUTHORIZED.getCode());
+            throw new BusinessException("Token验证签名密钥不正确", HttpStatus.UNAUTHORIZED.getCode());
         } catch (MalformedJwtException e) {
-            throw new BusinessException("Token无效或者不存在",HttpStatus.UNAUTHORIZED.getCode());
+            throw new BusinessException("Token无效或者不存在", HttpStatus.UNAUTHORIZED.getCode());
+        } catch (Exception e) {
+            throw new BusinessException("Token解析异常", HttpStatus.UNAUTHORIZED.getCode());
         }
         return claims;
     }

@@ -1,20 +1,12 @@
 package cn.soboys.restapispringbootstarter.serializer;
 
-import cn.soboys.restapispringbootstarter.config.RestApiProperties;
 import cn.soboys.restapispringbootstarter.exception.JsonSerializableException;
+import cn.soboys.restapispringbootstarter.utils.StrUtil;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import lombok.Data;
-import org.dromara.hutool.core.date.DateUtil;
-import org.dromara.hutool.core.text.StrUtil;
-import org.dromara.hutool.extra.spring.SpringUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.math.BigDecimal;
-import java.util.*;
 
 /**
  * @author 公众号 程序员三时

@@ -108,10 +108,11 @@
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.dromara.hutool/hutool-all -->
+
         <dependency>
-            <groupId>org.dromara.hutool</groupId>
+            <groupId>cn.hutool.v7</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>6.0.0-M22</version>
+            <version>7.0.0-M7</version>
         </dependency>
 
         <dependency>
@@ -119,25 +120,13 @@
             <artifactId>ip2region</artifactId>
             <version>${ip2region.version}</version>
         </dependency>
+        <!--jwt token-->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jjwt.version}</version>
+        </dependency>
 
-        <!--jwt token (Jakarta EE compatible)-->
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-api</artifactId>
-            <version>${jjwt.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-impl</artifactId>
-            <version>${jjwt.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-jackson</artifactId>
-            <version>${jjwt.version}</version>
-            <scope>runtime</scope>
-        </dependency>
 
 
         <!--Apache 工具包-->

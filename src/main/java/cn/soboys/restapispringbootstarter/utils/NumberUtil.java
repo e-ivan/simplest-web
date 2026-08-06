@@ -1,7 +1,8 @@
 package cn.soboys.restapispringbootstarter.utils;
 
-import org.dromara.hutool.core.lang.tuple.Pair;
-import org.dromara.hutool.core.util.ObjUtil;
+
+import cn.hutool.v7.core.lang.tuple.Pair;
+import cn.hutool.v7.core.util.ObjUtil;
 
 import java.util.Arrays;
 
@@ -11,7 +12,7 @@ import java.util.Arrays;
  * @author ex_lianghf8
  * @since 2024/7/25 下午5:01
  */
-public class NumberUtil extends org.dromara.hutool.core.math.NumberUtil {
+public class NumberUtil extends cn.hutool.v7.core.math.NumberUtil {
 
     /**
      * 查找数字相邻的数字

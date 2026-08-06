@@ -1,11 +1,11 @@
 package cn.soboys.restapispringbootstarter.config;
 
+import cn.soboys.restapispringbootstarter.utils.StrUtil;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
-import org.dromara.hutool.core.text.StrUtil;
+import jakarta.annotation.Resource;
 import org.springdoc.core.models.GroupedOpenApi;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(value = {RestApiProperties.OpenApiProperties.class})
 public class OpenApiConfig {
 
-    @Autowired
+    @Resource
     private RestApiProperties.OpenApiProperties openApiProperties;
 
     @Bean

@@ -2,7 +2,7 @@ package cn.soboys.restapispringbootstarter.log;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.dromara.hutool.json.JSONUtil;
+import cn.hutool.v7.json.JSONUtil;
 
 /**
  * @Author: kenx

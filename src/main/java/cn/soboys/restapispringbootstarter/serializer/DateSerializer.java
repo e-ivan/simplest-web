@@ -1,11 +1,11 @@
 package cn.soboys.restapispringbootstarter.serializer;
 
+import cn.hutool.v7.core.date.DateUtil;
 import cn.soboys.restapispringbootstarter.config.RestApiProperties;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import org.dromara.hutool.core.date.DateUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.Resource;
 
 import java.io.IOException;
 import java.util.Date;
@@ -18,17 +18,17 @@ import java.util.Date;
  */
 public class DateSerializer extends JsonSerializer<Date> {
 
-    @Autowired
+    @Resource
     private RestApiProperties.JsonSerializeProperties jsonSerializeProperties;
 
     @Override
     public void serialize(Date value, JsonGenerator jgen, SerializerProvider serializerProvider) throws IOException {
         if (value != null) {
             //DateUtil.format(value, DatePattern.NORM_DATETIME_MS_PATTERN);
-            if(jsonSerializeProperties.getDateForm().equals("timestamp")){
+            if (jsonSerializeProperties.getDateForm().equals("timestamp")) {
                 jgen.writeString(String.valueOf(value.getTime()));
-            }else {
-                jgen.writeString( DateUtil.format(value, jsonSerializeProperties.getDateForm()));
+            } else {
+                jgen.writeString(DateUtil.format(value, jsonSerializeProperties.getDateForm()));
             }
 
         }

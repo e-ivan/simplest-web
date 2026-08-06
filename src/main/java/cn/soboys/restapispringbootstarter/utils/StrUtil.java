@@ -1,7 +1,5 @@
 package cn.soboys.restapispringbootstarter.utils;
 
-import org.dromara.hutool.core.collection.CollUtil;
-import org.dromara.hutool.core.text.split.SplitUtil;
 import org.springframework.util.AntPathMatcher;
 
 import java.util.List;
@@ -10,7 +8,7 @@ import java.util.List;
  * @author E_Ivan
  * @since 2024/8/12 下午4:02
  */
-public class StrUtil extends org.dromara.hutool.core.text.StrUtil {
+public class StrUtil extends cn.hutool.v7.core.text.StrUtil {
     private static final String[] GENERAL_BLANK = {"-", "#N,A", "--", "—"};
 
     public static boolean isBlankGeneral(String str) {

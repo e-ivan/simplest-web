@@ -1,10 +1,10 @@
 package cn.soboys.restapispringbootstarter.cache;
 
 import cn.soboys.restapispringbootstarter.config.RestApiProperties;
+import cn.soboys.restapispringbootstarter.utils.StrUtil;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.dromara.hutool.core.text.StrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
@@ -41,20 +41,19 @@ public class RedisConfig {
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(factory);
-        Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
-        //序列化包括类型描述 否则反向序列化实体会报错，一律都为JsonObject
         ObjectMapper mapper = new ObjectMapper();
         mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         mapper.activateDefaultTyping(mapper.getPolymorphicTypeValidator(), ObjectMapper.DefaultTyping.NON_FINAL);
         // 使用 Jackson2JsonRedisSerializer 作为 value 的序列化器
-        jackson2JsonRedisSerializer.setObjectMapper(mapper);
+        Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(mapper, Object.class);
+        //序列化包括类型描述 否则反向序列化实体会报错，一律都为JsonObject
         /// 使用 StringRedisSerializer 作为 key 的序列化器
         StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
         // key采用 String的序列化方式 如果有前缀的时候。加入全局前缀
-        if(redisProperties!=null&& StrUtil.isNotEmpty(redisProperties.getKeyPrefix())){
-            template.setKeySerializer(new PrefixStringRedisSerializer(redisProperties.getKeyPrefix()+":", stringRedisSerializer));
-            template.setHashKeySerializer(new PrefixStringRedisSerializer(redisProperties.getKeyPrefix()+":", stringRedisSerializer));
-        }else {
+        if (redisProperties != null && StrUtil.isNotEmpty(redisProperties.getKeyPrefix())) {
+            template.setKeySerializer(new PrefixStringRedisSerializer(redisProperties.getKeyPrefix() + ":", stringRedisSerializer));
+            template.setHashKeySerializer(new PrefixStringRedisSerializer(redisProperties.getKeyPrefix() + ":", stringRedisSerializer));
+        } else {
             template.setKeySerializer(stringRedisSerializer);
             // hash的 key也采用 String的序列化方式
             template.setHashKeySerializer(stringRedisSerializer);

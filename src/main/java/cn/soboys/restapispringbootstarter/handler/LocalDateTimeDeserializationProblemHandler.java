@@ -4,7 +4,7 @@ import cn.soboys.restapispringbootstarter.utils.TimeUtil;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.DeserializationProblemHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.dromara.hutool.core.reflect.ClassUtil;
+import cn.hutool.v7.core.reflect.ClassUtil;
 
 import java.io.IOException;
 import java.time.LocalDateTime;

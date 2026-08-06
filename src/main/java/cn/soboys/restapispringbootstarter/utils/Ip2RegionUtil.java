@@ -2,8 +2,8 @@ package cn.soboys.restapispringbootstarter.utils;
 
 import cn.soboys.restapispringbootstarter.config.RestApiProperties;
 import lombok.extern.slf4j.Slf4j;
-import org.dromara.hutool.core.io.file.FileUtil;
-import org.dromara.hutool.extra.spring.SpringUtil;
+import cn.hutool.v7.core.io.file.FileUtil;
+import cn.hutool.v7.extra.spring.SpringUtil;
 import org.lionsoul.ip2region.service.Config;
 import org.lionsoul.ip2region.service.Ip2Region;
 import org.springframework.core.io.ClassPathResource;

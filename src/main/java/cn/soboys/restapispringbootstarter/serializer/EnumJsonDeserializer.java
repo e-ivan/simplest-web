@@ -1,5 +1,6 @@
 package cn.soboys.restapispringbootstarter.serializer;
 
+import cn.hutool.v7.core.util.EnumUtil;
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -10,7 +11,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.dromara.hutool.core.util.EnumUtil;
 
 import java.io.IOException;
 

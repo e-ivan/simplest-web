@@ -1,13 +1,13 @@
 package cn.soboys.restapispringbootstarter;
 
+import cn.hutool.v7.core.array.ArrayUtil;
+import cn.hutool.v7.core.bean.BeanUtil;
+import cn.hutool.v7.extra.spring.SpringUtil;
 import cn.soboys.restapispringbootstarter.annotation.NoRestFulApi;
 import cn.soboys.restapispringbootstarter.config.RestApiProperties;
+import cn.soboys.restapispringbootstarter.utils.StrUtil;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.dromara.hutool.core.array.ArrayUtil;
-import org.dromara.hutool.core.bean.BeanUtil;
-import org.dromara.hutool.core.text.StrUtil;
-import org.dromara.hutool.extra.spring.SpringUtil;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -16,6 +16,7 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -27,7 +28,7 @@ import java.util.Map;
 @Slf4j
 @ControllerAdvice
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-public class ResultHandler {
+public class ResultHandler implements ResponseBodyAdvice<Object> {
 
     @Resource
     private RestApiProperties restApiProperties;
@@ -41,6 +42,7 @@ public class ResultHandler {
      * @param converterType
      * @return
      */
+    @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
         return this.userDefineWrapResult(returnType);
     }
@@ -57,6 +59,7 @@ public class ResultHandler {
      * @param response
      * @return
      */
+    @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         if (body instanceof Result) {
             return this.userDefinedResultKey((Result) body);

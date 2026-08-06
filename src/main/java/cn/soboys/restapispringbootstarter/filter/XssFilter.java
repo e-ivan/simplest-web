@@ -1,11 +1,11 @@
 package cn.soboys.restapispringbootstarter.filter;
 
+import cn.hutool.v7.extra.spring.SpringUtil;
 import cn.soboys.restapispringbootstarter.config.XssProperties;
 import cn.soboys.restapispringbootstarter.utils.StrUtil;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.dromara.hutool.extra.spring.SpringUtil;
 import org.springframework.http.HttpMethod;
 
 import java.io.IOException;

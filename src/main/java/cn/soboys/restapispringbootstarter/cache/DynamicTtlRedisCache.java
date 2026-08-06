@@ -1,9 +1,9 @@
 package cn.soboys.restapispringbootstarter.cache;
 
 import cn.soboys.restapispringbootstarter.utils.NumberUtil;
+import cn.soboys.restapispringbootstarter.utils.SplitUtil;
 import cn.soboys.restapispringbootstarter.utils.StrUtil;
 import cn.soboys.restapispringbootstarter.utils.Strings;
-import org.dromara.hutool.core.text.split.SplitUtil;
 import org.springframework.cache.support.SimpleValueWrapper;
 import org.springframework.data.redis.cache.RedisCache;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;

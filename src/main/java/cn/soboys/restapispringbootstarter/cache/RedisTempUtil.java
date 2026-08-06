@@ -1,7 +1,7 @@
 package cn.soboys.restapispringbootstarter.cache;
 
+import cn.hutool.v7.extra.spring.SpringUtil;
 import jakarta.annotation.Resource;
-import org.dromara.hutool.extra.spring.SpringUtil;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;

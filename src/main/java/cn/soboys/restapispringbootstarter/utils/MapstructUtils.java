@@ -3,9 +3,9 @@ package cn.soboys.restapispringbootstarter.utils;
 import io.github.linpeilie.Converter;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.dromara.hutool.core.map.MapUtil;
-import org.dromara.hutool.core.util.ObjUtil;
-import org.dromara.hutool.extra.spring.SpringUtil;
+import cn.hutool.v7.core.map.MapUtil;
+import cn.hutool.v7.core.util.ObjUtil;
+import cn.hutool.v7.extra.spring.SpringUtil;
 
 import java.util.ArrayList;
 import java.util.List;

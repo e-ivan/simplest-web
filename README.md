@@ -18,7 +18,7 @@
 5. 封装Redis key,value 操作工具类。统一key管理 spring cache缓存实现
 6. RestTemplate 封装 POST,GET 请求工具
 7. 日志集成。自定义日志路径，按照日志等级分类，支持压缩和文件大小分割。按时间显示
-8. 工具库集成 集成了lombok，hutool，commons-lang3，guava。不需要自己单个引入
+8. 工具库集成 集成了lombok，hutool v7，commons-lang3，guava。不需要自己单个引入
 9. 集成mybatisPlus一键代码生成
 10. 日志记录，服务监控，支持日志链路查询。自定义数据源
 11. OpenApi3文档一键配置。支持多种文档和自动配置
@@ -27,7 +27,6 @@
 14. 接口限流，Ip城市回显
 15. HttpUserAgent请求设备工具封装
 16. RequestUtil参数解析封装工具
-
 
 [详细使用文档官网](https://boot.soboys.cn/simplest/)
 

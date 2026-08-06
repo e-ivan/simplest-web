@@ -1,11 +1,11 @@
 package cn.soboys.restapispringbootstarter.serializer;
 
+import cn.hutool.v7.core.date.DateUtil;
 import cn.soboys.restapispringbootstarter.config.RestApiProperties;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import org.dromara.hutool.core.date.DateUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.annotation.Resource;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -19,7 +19,7 @@ import java.time.ZoneId;
  */
 public class LocalDateTimeSerializer extends JsonSerializer<LocalDateTime> {
 
-    @Autowired
+    @Resource
     private RestApiProperties.JsonSerializeProperties jsonSerializeProperties;
 
     @Override

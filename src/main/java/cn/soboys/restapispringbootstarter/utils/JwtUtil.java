@@ -5,7 +5,6 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.MacAlgorithm;
-import jakarta.xml.bind.DatatypeConverter;
 
 import javax.crypto.SecretKey;
 import java.util.Base64;
@@ -42,7 +41,7 @@ public class JwtUtil {
                 .id(issue)//jwtID
                 .expiration(exp)//设置过期日期
                 .claim("user", claim)//主题，可以包含用户信息
-                .signWith(getSignedKey(), getSignatureAlgorithm())//加密算法
+                .signWith(getSignedKey())//加密算法
                 .compressWith(Jwts.ZIP.DEF).compact();
     }
 
@@ -60,7 +59,7 @@ public class JwtUtil {
                 .id(issue)//jwtID
                 .expiration(exp)//设置过期日期
                 .claim("user", claim)//主题，可以包含用户信息
-                .signWith(getSignedKey(key), macAlgorithm)//加密算法
+                .signWith(getSignedKey(key))//加密算法
                 .compressWith(Jwts.ZIP.DEF).compact();//对载荷进行压缩
 
         return result;
@@ -69,13 +68,16 @@ public class JwtUtil {
 
     // 解析jwt
     public static Jws<Claims> parseJWT(String jwt) {
-        return Jwts.parser().verifyWith(getSignedKey())
-                .build().parseSignedClaims(jwt);
+        return parseJWT(jwt, getSignedKey());
     }
 
     public static Jws<Claims> parseJWT(String jwt, SecretKey key) {
         return Jwts.parser().verifyWith(key)
                 .build().parseSignedClaims(jwt);
+    }
+
+    public static Jws<Claims> parseJWT(String jwt, String key) {
+        return parseJWT(jwt, getSignedKey(key));
     }
 
 
@@ -91,6 +93,10 @@ public class JwtUtil {
                 .build().parseSignedClaims(jwt).getPayload();
     }
 
+    public static Claims getClaims(String jwt, String key) {
+        return getClaims(jwt, getSignedKey(key));
+    }
+
 
     /**
      * 获取密钥
@@ -102,19 +108,20 @@ public class JwtUtil {
     }
 
     private static SecretKey getSignedKey(String key) {
-        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(key);
-        return Keys.hmacShaKeyFor(Base64.getDecoder().decode(apiKeySecretBytes));
+        byte[] keyBytes = Base64.getDecoder().decode(key);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
 
     /**
      * 自定义秘钥
+     * 生成方式：SecretKey key = Keys.secretKeyFor(Jwts.SIG.HS256);
+     * String encoded = Base64.getEncoder().encodeToString(key.getEncoded());
      *
-     * @return
+     * @return Base64编码的32字节安全密钥
      */
     public static String getAuthKey() {
-        String auth = "2af57b969bac152d";
-        return auth;
+        return "dGhpcy1pcy1hLXNlY3JldC1rZXktZm9yLWhzMjU2LWFsZ29yaXRobQ==";
     }
 
     /**

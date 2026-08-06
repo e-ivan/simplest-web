@@ -1,7 +1,7 @@
 package cn.soboys.restapispringbootstarter.utils;
 
-import org.dromara.hutool.core.text.StrUtil;
-import org.dromara.hutool.core.util.EnumUtil;
+
+import cn.hutool.v7.core.util.EnumUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * @author E_Ivan
  * @since 2024/7/19 下午5:49
  */
-public class SplitUtil extends org.dromara.hutool.core.text.split.SplitUtil {
+public class SplitUtil extends cn.hutool.v7.core.text.split.SplitUtil {
 
     /**
      * 通常的分割，一半的隔开符号都可以分割

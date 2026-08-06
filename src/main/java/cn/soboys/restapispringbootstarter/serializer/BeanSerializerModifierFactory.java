@@ -1,15 +1,15 @@
 package cn.soboys.restapispringbootstarter.serializer;
 
+import cn.hutool.v7.core.text.StrUtil;
 import cn.soboys.restapispringbootstarter.config.RestApiProperties;
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.ser.BeanPropertyWriter;
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
-import org.dromara.hutool.core.text.StrUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import jakarta.annotation.Resource;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
+import java.io.Serial;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -24,14 +24,16 @@ import java.util.Set;
 @EnableConfigurationProperties(RestApiProperties.JsonSerializeProperties.class) //开启属性绑定
 public class BeanSerializerModifierFactory extends BeanSerializerModifier {
 
-    @Autowired
+    @Serial
+    private static final long serialVersionUID = -2093385205867594615L;
+    @Resource
     private RestApiProperties.JsonSerializeProperties jsonSerializeProperties;
 
     @Override
     public List<BeanPropertyWriter> changeProperties(SerializationConfig config, BeanDescription beanDesc, List<BeanPropertyWriter> beanProperties) {
         if (!jsonSerializeProperties.getNullAble().getHasNullAble()) return beanProperties; //不开启空序列化
         for (int i = 0; i < beanProperties.size(); i++) {
-            BeanPropertyWriter writer = (BeanPropertyWriter) beanProperties.get(i);
+            BeanPropertyWriter writer = beanProperties.get(i);
             SerializableType type = new SerializableType();
             RestApiProperties.NullAble nullAble = jsonSerializeProperties.getNullAble();
             // 判断字段的类型，如果是array，list，set则注册nullSerializer

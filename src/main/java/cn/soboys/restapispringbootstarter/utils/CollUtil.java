@@ -1,7 +1,7 @@
 package cn.soboys.restapispringbootstarter.utils;
 
+import cn.hutool.v7.core.map.MapUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.dromara.hutool.core.map.MapUtil;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * @date 2024/3/2 17:07
  */
 @Slf4j
-public class CollUtil extends org.dromara.hutool.core.collection.CollUtil {
+public class CollUtil extends cn.hutool.v7.core.collection.CollUtil {
 
     /**
      * 集合批量查询填充

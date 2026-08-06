@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
 import com.baomidou.mybatisplus.generator.config.GlobalConfig;
 import com.baomidou.mybatisplus.generator.config.InjectionConfig;
 import com.baomidou.mybatisplus.generator.config.PackageConfig;
-import org.dromara.hutool.core.text.StrUtil;
+import cn.hutool.v7.core.text.StrUtil;
 
 import java.util.Scanner;
 

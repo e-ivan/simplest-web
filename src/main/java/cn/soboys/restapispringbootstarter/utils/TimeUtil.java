@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
  * @since 2026/5/22 20:10
  */
 @Slf4j
-public class TimeUtil extends org.dromara.hutool.core.date.TimeUtil{
+public class TimeUtil extends cn.hutool.v7.core.date.TimeUtil{
     private static final DateTimeFormatter[] FORMATTERS = new DateTimeFormatter[]{
             DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"),
             DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"),

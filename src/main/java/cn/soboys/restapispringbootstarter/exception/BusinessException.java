@@ -3,7 +3,7 @@ package cn.soboys.restapispringbootstarter.exception;
 import cn.soboys.restapispringbootstarter.ResultCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.dromara.hutool.core.text.StrUtil;
+import cn.soboys.restapispringbootstarter.utils.StrUtil;
 
 import java.io.Serial;
 
