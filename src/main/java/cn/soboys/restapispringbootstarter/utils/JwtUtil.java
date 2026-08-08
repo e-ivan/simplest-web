@@ -47,7 +47,7 @@ public class JwtUtil {
 
 
     public static String createJWT(String subject, String issue, Object claim,
-                                   long ttlMillis, MacAlgorithm macAlgorithm, String key) {
+                                   long ttlMillis, String key) {
 
         //过期时间
         Date now = new Date();

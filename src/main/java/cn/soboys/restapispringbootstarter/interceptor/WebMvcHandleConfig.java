@@ -2,8 +2,10 @@ package cn.soboys.restapispringbootstarter.interceptor;
 
 import lombok.extern.slf4j.Slf4j;
 import cn.hutool.v7.core.math.NumberUtil;
-import cn.hutool.v7.core.util.EnumUtil;
 import cn.hutool.v7.extra.spring.SpringUtil;
+import cn.soboys.restapispringbootstarter.config.RestApiProperties;
+import cn.soboys.restapispringbootstarter.utils.EnumUtil;
+import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
@@ -30,6 +32,8 @@ import java.util.Objects;
 @Slf4j
 public class WebMvcHandleConfig implements WebMvcConfigurer {
 
+    @Resource
+    private RestApiProperties.InvokeTimeProperties invokeTimeProperties;
 
     /**
      * 授权登录拦截器
@@ -41,9 +45,27 @@ public class WebMvcHandleConfig implements WebMvcConfigurer {
         return new JwtTokenInterceptor();
     }
 
+    /**
+     * 请求耗时统计拦截器
+     *
+     * @return
+     */
+    @Bean
+    public WebInvokeTimeInterceptor webInvokeTimeInterceptor() {
+        return new WebInvokeTimeInterceptor();
+    }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(SpringUtil.getBean(JwtTokenInterceptor.class));
+
+        if (invokeTimeProperties != null && Boolean.TRUE.equals(invokeTimeProperties.getEnabled())) {
+            log.info("开启请求耗时统计拦截器");
+            registry.addInterceptor(SpringUtil.getBean(WebInvokeTimeInterceptor.class))
+                    .addPathPatterns(invokeTimeProperties.getIncludePath())
+                    .excludePathPatterns(invokeTimeProperties.getExcludePath());
+        }
+
         WebMvcConfigurer.super.addInterceptors(registry);
     }
 

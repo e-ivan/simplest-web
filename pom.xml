@@ -268,19 +268,33 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                    <release>${java.version}</release>
                     <encoding>UTF-8</encoding>
+                    <parameters>true</parameters>
                     <annotationProcessorPaths>
+                        <!-- Lombok（版本由 spring-boot-dependencies 管理，不用写死） -->
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>1.18.30</version>
+                            <version>${lombok.version}</version>
                         </path>
+                        <!-- Spring Boot 配置元数据处理器：自动生成 spring-configuration-metadata.json -->
+                        <path>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-configuration-processor</artifactId>
+                            <version>3.5.16</version>
+                        </path>
+                        <!-- Mapstruct-plus 注解处理器 -->
                         <path>
                             <groupId>io.github.linpeilie</groupId>
                             <artifactId>mapstruct-plus-processor</artifactId>
                             <version>${mapstruct-plus.version}</version>
                         </path>
                     </annotationProcessorPaths>
+                    <compilerArgs>
+                        <!-- 让 spring-boot-configuration-processor 生成更完整的描述信息 -->
+                        <arg>-Aorg.springframework.boot.configurationprocessor.additionalMetadataLocations=META-INF</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
             <!-- Source -->

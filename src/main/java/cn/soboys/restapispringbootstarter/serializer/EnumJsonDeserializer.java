@@ -1,6 +1,6 @@
 package cn.soboys.restapispringbootstarter.serializer;
 
-import cn.hutool.v7.core.util.EnumUtil;
+import cn.soboys.restapispringbootstarter.utils.EnumUtil;
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;

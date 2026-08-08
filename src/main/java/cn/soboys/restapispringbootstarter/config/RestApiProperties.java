@@ -2,6 +2,7 @@ package cn.soboys.restapispringbootstarter.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
@@ -71,11 +72,32 @@ public class RestApiProperties {
      */
     private String[] includePackages;
 
+    @NestedConfigurationProperty
+    private Ip2regionProperties ip2region = new Ip2regionProperties();
+
+    @NestedConfigurationProperty
+    private JwtProperties jwt = new JwtProperties();
+
+    @NestedConfigurationProperty
+    private LoggingProperties logging = new LoggingProperties();
+
+    @NestedConfigurationProperty
+    private RedisProperties redis = new RedisProperties();
+
+    @NestedConfigurationProperty
+    private OpenApiProperties openapi = new OpenApiProperties();
+
+    @NestedConfigurationProperty
+    private InvokeTimeProperties invokeTime = new InvokeTimeProperties();
+
+    @NestedConfigurationProperty
+    private JsonSerializeProperties json = new JsonSerializeProperties();
+
 
     @Configuration
     @ConfigurationProperties(prefix = "rest-api.ip2region")
     @Data
-    public class Ip2regionProperties {
+    public static class Ip2regionProperties {
         /**
          * 是否使用外部的IP数据文件.
          */
@@ -93,7 +115,7 @@ public class RestApiProperties {
     @Configuration
     @ConfigurationProperties(prefix = "rest-api.jwt")
     @Data
-    public class JwtProperties {
+    public static class JwtProperties {
 
         /**
          * 过期时间秒1天后过期=86400  (单位秒)
@@ -143,7 +165,7 @@ public class RestApiProperties {
     @Configuration
     @ConfigurationProperties(prefix = "rest-api.logging")
     @Data
-    public class LoggingProperties {
+    public static class LoggingProperties {
         private String path;
         private String maxHistory;
         private String maxFileSize;
@@ -155,7 +177,7 @@ public class RestApiProperties {
     @Configuration
     @ConfigurationProperties(prefix = "rest-api.redis")
     @Data
-    public class RedisProperties {
+    public static class RedisProperties {
         /**
          * 全局注册key
          */
@@ -169,7 +191,7 @@ public class RestApiProperties {
     @Configuration
     @ConfigurationProperties(prefix = "rest-api.openapi")
     @Data
-    public class OpenApiProperties {
+    public static class OpenApiProperties {
         /**
          * 是否开启swagger
          */
@@ -262,6 +284,27 @@ public class RestApiProperties {
     }
 
     @Configuration
+    @ConfigurationProperties(prefix = "rest-api.invoke-time")
+    @Data
+    public static class InvokeTimeProperties {
+
+        /**
+         * 是否开启请求耗时统计拦截器
+         */
+        private Boolean enabled = Boolean.FALSE;
+
+        /**
+         * 需要拦截的路径
+         */
+        private List<String> includePath = List.of("/**");
+
+        /**
+         * 不需要拦截的路径（默认排除：错误页、监控端点、静态资源、接口文档）
+         */
+        private List<String> excludePath = List.of("/error", "/actuator/**");
+    }
+
+    @Configuration
     @ConfigurationProperties(prefix = "rest-api.json")
     @Data
     public static class JsonSerializeProperties {
@@ -294,7 +337,7 @@ public class RestApiProperties {
      * 空集合 返回[],Double 返回 0.00 Number 返回0 字符串返回""
      */
     @Data
-    public static class NullAble{
+    public static class NullAble {
         /**
          * 是否开启对空值处理
          */
@@ -302,28 +345,27 @@ public class RestApiProperties {
 
         /**
          * 当 int和long 类型为空默认处理返回0
-         *original 不处理| number 0|string ""|
+         * original 不处理| number 0|string ""|
          */
-        private String  NumberType="number";
+        private String NumberType = "number";
 
         /**
          * 当 集合类型 空处理默认返会 []
          * original 不处理 |array []
          */
-        private String ArrayType="array";
+        private String ArrayType = "array";
 
         /**
          * 浮点类型 空处理 默认返回 0.00
          * original 不处理 |double 0.00
          */
-        private String DoubleType="double";
+        private String DoubleType = "double";
 
         /**
          * 对象 空处理 包括null空字符
          * original 不处理 |string ""
          */
-        private String ObjectType="string";
-
+        private String ObjectType = "string";
 
 
     }

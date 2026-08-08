@@ -53,7 +53,7 @@ public class UserJwtToken {
             if (StrUtil.isEmpty(key)) {
                 key = jwtProperties.getSecret();
             }
-            token = JwtUtil.createJWT(username, userId, users, expiration, userSign.sign(), key);
+            token = JwtUtil.createJWT(username, userId, users, expiration, key);
         } else {
             token = JwtUtil.createJWT(username, userId, users, expiration);
         }

@@ -13,6 +13,7 @@ import cn.hutool.v7.json.JSONUtil;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
 import java.io.BufferedReader;
 import java.util.Map;
@@ -28,8 +29,20 @@ public class WebInvokeTimeInterceptor implements HandlerInterceptor {
 
     private final static ThreadLocal<StopWatch> KEY_CACHE = new ThreadLocal<>();
 
+    private static final String[] STATIC_SUFFIXES = {
+            ".html", ".htm", ".css", ".js", ".map",
+            ".png", ".jpg", ".jpeg", ".gif", ".svg", ".ico", ".bmp", ".webp",
+            ".woff", ".woff2", ".ttf", ".eot", ".otf",
+            ".mp4", ".mp3", ".avi", ".mov", ".pdf", ".zip", ".rar", ".7z"
+    };
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        // 静态资源请求直接放行，不打日志、不计时（双重判断：handler + URI 后缀）
+        if (isStaticRequest(request, handler)) {
+            return true;
+        }
+
         String url = request.getMethod() + " " + request.getRequestURI();
 
         // 打印请求参数
@@ -70,6 +83,32 @@ public class WebInvokeTimeInterceptor implements HandlerInterceptor {
             log.info("结束请求 => URL[{}],耗时:[{}]毫秒", request.getMethod() + " " + request.getRequestURI(), stopWatch.getTotalTimeMillis());
             KEY_CACHE.remove();
         }
+    }
+
+    /**
+     * 判断是否为静态资源请求（双重保证：Spring 资源处理器判断 + URI 后缀判断）
+     *
+     * @param request 请求
+     * @param handler 当前 handler
+     * @return 是否静态资源
+     */
+    private boolean isStaticRequest(HttpServletRequest request, Object handler) {
+        // 方式1：Spring 识别到的就是 ResourceHttpRequestHandler，说明映射到了静态资源
+        if (handler instanceof ResourceHttpRequestHandler) {
+            return true;
+        }
+        // 方式2：兜底：根据 URI 后缀判断
+        String uri = request.getRequestURI();
+        int dot = uri.lastIndexOf('.');
+        if (dot >= 0) {
+            String suffix = uri.substring(dot);
+            for (String s : STATIC_SUFFIXES) {
+                if (s.equalsIgnoreCase(suffix)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

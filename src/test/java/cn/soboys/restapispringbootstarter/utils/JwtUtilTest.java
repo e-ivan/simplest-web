@@ -50,9 +50,8 @@ class JwtUtilTest {
     @DisplayName("测试自定义密钥和算法创建JWT")
     void testCreateJWT_customKeyAndAlgorithm() {
         String customKey = "Y3VzdG9tLXNlY3JldC1rZXktZm9yLXRlc3RzLWhzMjU2LTI1NmJpdHM=";
-        MacAlgorithm algorithm = Jwts.SIG.HS256;
 
-        String jwt = JwtUtil.createJWT(subject, issue, userClaim, ttlMillis, algorithm, customKey);
+        String jwt = JwtUtil.createJWT(subject, issue, userClaim, ttlMillis, customKey);
 
         assertNotNull(jwt);
         assertFalse(jwt.isEmpty());
@@ -94,7 +93,7 @@ class JwtUtilTest {
         String customKey = "Y3VzdG9tLXNlY3JldC1rZXktZm9yLXRlc3RzLWhzMjU2LTI1NmJpdHM=";
         MacAlgorithm algorithm = Jwts.SIG.HS256;
 
-        String jwt = JwtUtil.createJWT(subject, issue, userClaim, ttlMillis, algorithm, customKey);
+        String jwt = JwtUtil.createJWT(subject, issue, userClaim, ttlMillis, customKey);
 
         SecretKey secretKey = getSignedKey(customKey);
         Jws<Claims> claimsJws = JwtUtil.parseJWT(jwt, secretKey);
@@ -126,7 +125,7 @@ class JwtUtilTest {
         String customKey = "Y3VzdG9tLXNlY3JldC1rZXktZm9yLXRlc3RzLWhzMjU2LTI1NmJpdHM=";
         MacAlgorithm algorithm = Jwts.SIG.HS256;
 
-        String jwt = JwtUtil.createJWT(subject, issue, userClaim, ttlMillis, algorithm, customKey);
+        String jwt = JwtUtil.createJWT(subject, issue, userClaim, ttlMillis, customKey);
 
         SecretKey secretKey = getSignedKey(customKey);
         Claims claims = JwtUtil.getClaims(jwt, secretKey);

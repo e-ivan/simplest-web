@@ -1,5 +1,7 @@
 package cn.soboys.restapispringbootstarter.serializer;
 
+import cn.hutool.v7.core.date.DateFormatPool;
+import cn.hutool.v7.json.engine.jackson.HutoolModule;
 import cn.soboys.restapispringbootstarter.config.RestApiProperties;
 import cn.soboys.restapispringbootstarter.enums.EnumType;
 import cn.soboys.restapispringbootstarter.handler.LocalDateTimeDeserializationProblemHandler;
@@ -29,7 +31,7 @@ public class JsonSerializerConfig {
 
     @Bean
     @ConditionalOnMissingBean
-    public RestApiProperties.JsonSerializeProperties jsonSerializeProperties() {
+    public RestApiProperties.JsonSerializeProperties jsonSerializeProperties(RestApiProperties restApiProperties) {
         return new RestApiProperties.JsonSerializeProperties();
     }
 
@@ -100,6 +102,7 @@ public class JsonSerializerConfig {
         module.addDeserializer(LocalDateTime.class, localDateTimeDeserializer);
         module.addDeserializer(Enum.class, enumJsonDeserializer);
         objectMapper.registerModule(module);
+        objectMapper.registerModule(new HutoolModule(DateFormatPool.NORM_DATETIME_PATTERN));
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         objectMapper.disable(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS);
 

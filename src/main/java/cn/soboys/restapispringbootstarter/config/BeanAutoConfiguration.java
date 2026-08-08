@@ -4,6 +4,8 @@ package cn.soboys.restapispringbootstarter.config;
 import cn.soboys.restapispringbootstarter.ApplicationRunner;
 import cn.soboys.restapispringbootstarter.ExceptionHandler;
 import cn.soboys.restapispringbootstarter.ResultHandler;
+import cn.soboys.restapispringbootstarter.aop.AuthorityAspect;
+import cn.soboys.restapispringbootstarter.aop.EmptyParamReturnAspect;
 import cn.soboys.restapispringbootstarter.aop.LimitAspect;
 import cn.soboys.restapispringbootstarter.aop.LogAspect;
 import cn.soboys.restapispringbootstarter.i18n.I18NMessage;
@@ -12,6 +14,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 import org.hibernate.validator.HibernateValidator;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -38,65 +41,95 @@ public class BeanAutoConfiguration {
 
 
     @Bean
+    @ConditionalOnMissingBean
     public I18NMessage i18NMessage() {
         return new I18NMessage();
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public ResultHandler resultHandler() {
         return new ResultHandler();
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public ExceptionHandler exceptionHandler() {
         return new ExceptionHandler();
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public StartupApplicationListener startupApplicationListener() {
         return new StartupApplicationListener();
     }
 
 
     @Bean
+    @ConditionalOnMissingBean
     public RestApiProperties restApiProperties() {
         return new RestApiProperties();
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public RestApiProperties.LoggingProperties loggingProperties(RestApiProperties restApiProperties) {
-        return restApiProperties.new LoggingProperties();
+        return new RestApiProperties.LoggingProperties();
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public RestApiProperties.Ip2regionProperties ip2regionProperties(RestApiProperties restApiProperties) {
-        return restApiProperties.new Ip2regionProperties();
+        return new RestApiProperties.Ip2regionProperties();
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public RestApiProperties.JwtProperties jwtProperties(RestApiProperties restApiProperties) {
-        return restApiProperties.new JwtProperties();
+        return new RestApiProperties.JwtProperties();
     }
 
     @Bean
+    @ConditionalOnMissingBean
+    public RestApiProperties.InvokeTimeProperties invokeTimeProperties(RestApiProperties restApiProperties) {
+        return new RestApiProperties.InvokeTimeProperties();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
     public ApplicationRunner applicationRunner() {
         return new ApplicationRunner();
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public LogAspect logAspect() {
         return new LogAspect();
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public LimitAspect limitAspect() {
         return new LimitAspect();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public AuthorityAspect authorityAspect() {
+        return new AuthorityAspect();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public EmptyParamReturnAspect emptyParamReturnAspect() {
+        return new EmptyParamReturnAspect();
     }
 
     /**
      * 参数校验快速失败返回 提升性能
      */
     @Bean
+    @ConditionalOnMissingBean
     public Validator validator() {
         ValidatorFactory validatorFactory = Validation.byProvider(HibernateValidator.class)
                 .configure()

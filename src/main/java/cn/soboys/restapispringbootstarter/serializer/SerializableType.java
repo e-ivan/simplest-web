@@ -9,6 +9,6 @@ import lombok.Data;
  * @webSite https://github.com/coder-amiao
  */
 @Data
-public class SerializableType{
+public class SerializableType {
     private String type;
 }
