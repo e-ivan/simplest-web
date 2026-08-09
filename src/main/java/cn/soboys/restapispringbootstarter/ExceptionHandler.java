@@ -16,7 +16,6 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
@@ -48,9 +47,8 @@ public class ExceptionHandler {
         List errorList = new ArrayList<>();
         Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
         for (ConstraintViolation<?> violation : violations) {
-            StringBuilder message = new StringBuilder();
-            Path path = violation.getPropertyPath();
-            String msg = message.append(((PathImpl) path).getLeafNode()).append(violation.getMessage()).toString();
+            Path.Node leafNode = violation.getPropertyPath().iterator().next();
+            String msg = leafNode.getName() + violation.getMessage();
             errorList.add(msg);
         }
         request.setAttribute("argument_error", CollUtil.join(errorList, ";"));

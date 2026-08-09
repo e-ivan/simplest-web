@@ -1,4 +1,2 @@
 cn.soboys.restapispringbootstarter.i18n.DefaultMessage
-
-
-
+cn.soboys.restapispringbootstarter.config.SpringDocConfig

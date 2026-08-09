@@ -1,6 +1,31 @@
-#不要为我们工程中的资源文件建立映射
 spring:
   web:
     resources:
       add-mappings: false
 
+springdoc:
+  api-docs:
+    enabled: false
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: false
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+    show-extensions: true
+  show-actuator: false
+  model-and-view-allowed: false
+  default-flat-param-object: true
+
+rest-api:
+  openapi:
+    enabled: false
+    title: Simplest API
+    description: 前后端分离项目基于 simplest-api 快速构建 Web JSON API 格式的统一通讯交互框架（零入侵 Javadoc 文档示例）
+    version: 4.1.0
+    group-name: simplest
+    base-package: cn.soboys.restapispringbootstarter
+    contact:
+      name: 公众号程序员三时
+      url: https://github.com/coder-amiao/simplest-api
+      email: xymarcus@163.com

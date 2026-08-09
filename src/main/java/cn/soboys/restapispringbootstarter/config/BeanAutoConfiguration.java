@@ -20,7 +20,7 @@ import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
@@ -155,8 +155,8 @@ public class BeanAutoConfiguration {
                 if (messageConverter instanceof StringHttpMessageConverter) {
                     ((StringHttpMessageConverter) messageConverter).setDefaultCharset(thirdRequest);
                 }
-                if (messageConverter instanceof MappingJackson2HttpMessageConverter) {
-                    ((MappingJackson2HttpMessageConverter) messageConverter).setDefaultCharset(thirdRequest);
+                if (messageConverter instanceof JacksonJsonHttpMessageConverter) {
+                    ((JacksonJsonHttpMessageConverter) messageConverter).setDefaultCharset(thirdRequest);
                 }
                 if (messageConverter instanceof AllEncompassingFormHttpMessageConverter) {
                     ((AllEncompassingFormHttpMessageConverter) messageConverter).setCharset(thirdRequest);

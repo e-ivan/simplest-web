@@ -248,6 +248,7 @@ public class ResultHandler implements ResponseBodyAdvice<Object> {
         Map<String, Object> controllerBeans = SpringUtil.getApplicationContext().getBeansWithAnnotation(RestController.class);
         controllerBeans.remove("openApiResource");
         controllerBeans.remove("swaggerConfigResource");
+        controllerBeans.remove("multipleOpenApiResource");
         for (Object bean : controllerBeans.values()) {
             String packName = bean.getClass().getPackage().getName();
             if (cls.contains(packName)) {
