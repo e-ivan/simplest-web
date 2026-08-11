@@ -1,15 +1,20 @@
 package cn.soboys.restapispringbootstarter.interceptor;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import cn.hutool.v7.core.math.NumberUtil;
 import cn.hutool.v7.extra.spring.SpringUtil;
 import cn.soboys.restapispringbootstarter.config.RestApiProperties;
 import cn.soboys.restapispringbootstarter.utils.EnumUtil;
 import jakarta.annotation.Resource;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.http.converter.HttpMessageConverters;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -34,6 +39,22 @@ public class WebMvcHandleConfig implements WebMvcConfigurer {
 
     @Resource
     private RestApiProperties.InvokeTimeProperties invokeTimeProperties;
+    @Resource
+    private RestApiProperties.JsonSerializeProperties jsonSerializeProperties;
+
+    @Autowired(required = false)
+    private ObjectMapper objectMapper;
+
+    @Override
+    public void configureMessageConverters(@NotNull HttpMessageConverters.ServerBuilder builder) {
+        if (jsonSerializeProperties.getUseJackson3() || Objects.isNull(objectMapper)) {
+            log.info("开启 Jackson3 序列化器");
+            return;
+        }
+        MappingJackson2HttpMessageConverter jackson2Converter = new MappingJackson2HttpMessageConverter();
+        jackson2Converter.setObjectMapper(objectMapper);
+        builder.withJsonConverter(jackson2Converter);
+    }
 
     /**
      * 授权登录拦截器
@@ -82,7 +103,6 @@ public class WebMvcHandleConfig implements WebMvcConfigurer {
         registry.addConverter(new StringToLocalDateTimeConverter());
         registry.addConverter(new StringToLocalDateConverter());
     }
-
 
 
     /**

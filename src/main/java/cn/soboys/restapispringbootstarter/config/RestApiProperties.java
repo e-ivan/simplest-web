@@ -231,6 +231,10 @@ public class RestApiProperties {
     @Data
     public static class JsonSerializeProperties {
         /**
+         * 是否使用 Jackson3 序列化器，现阶段很多框架不支持，默认关闭
+         */
+        private Boolean useJackson3 = Boolean.FALSE;
+        /**
          * 序列化类型
          */
         private List<String> serializableType = new ArrayList<>();
