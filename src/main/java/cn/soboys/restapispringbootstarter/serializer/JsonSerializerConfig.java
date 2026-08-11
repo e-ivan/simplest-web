@@ -6,6 +6,9 @@ import cn.soboys.restapispringbootstarter.config.RestApiProperties;
 import cn.soboys.restapispringbootstarter.enums.EnumType;
 import cn.soboys.restapispringbootstarter.handler.LocalDateTimeDeserializationProblemHandler;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.StreamReadConstraints;
+import com.fasterxml.jackson.core.StreamWriteConstraints;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -90,7 +93,27 @@ public class JsonSerializerConfig {
                                      BeanSerializerModifierFactory beanSerializerModifierFactory,
                                      LocalDateTimeSerializer localDateTimeSerializer, LocalDateTimeDeserializer localDateTimeDeserializer
     ) {
-        ObjectMapper objectMapper = new ObjectMapper();
+        // 1. 先配置 JsonFactory 的读取约束
+        StreamReadConstraints readConstraints = StreamReadConstraints.builder()
+                .maxStringLength(100_000_000)      // 字符串最大长度，默认 20,000,000
+                .maxNestingDepth(2000)              // 最大嵌套深度，默认 500
+                .maxNumberLength(1000)              // 数字最大长度，默认 1,000
+                .maxNameLength(50_000)              // 属性名最大长度，默认 50,000
+                .maxDocumentLength(-1)              // 文档最大长度，-1 表示无限制，默认 -1
+                .maxTokenCount(-1)                  // 最大 token 数量，-1 表示无限制，默认 -1
+                .build();
+
+        // 2. 配置写入约束（可选）
+        StreamWriteConstraints writeConstraints = StreamWriteConstraints.builder()
+                .maxNestingDepth(2000)              // 写入时最大嵌套深度，默认 500
+                .build();
+
+        // 3. 创建 JsonFactory 并设置约束
+        JsonFactory jsonFactory = JsonFactory.builder()
+                .streamReadConstraints(readConstraints)
+                .streamWriteConstraints(writeConstraints)
+                .build();
+        ObjectMapper objectMapper = new ObjectMapper(jsonFactory);
         //Jackson 当属性null 不会序列化。
 //        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         JavaTimeModule module = new JavaTimeModule();
@@ -109,7 +132,6 @@ public class JsonSerializerConfig {
         // 为mapper注册一个带有SerializerModifier的Factory，此modifier主要做的事情为：判断序列化类型，根据类型指定为null时的值
         objectMapper.setSerializerFactory(objectMapper.getSerializerFactory().withSerializerModifier(beanSerializerModifierFactory))
                 .addHandler(new LocalDateTimeDeserializationProblemHandler());
-
         return objectMapper;
     }
 }
