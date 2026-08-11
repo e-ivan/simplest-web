@@ -33,7 +33,7 @@ public class EnumUtil extends cn.hutool.v7.core.util.EnumUtil {
         String fieldName;
         for (final Field field : fields) {
             fieldName = field.getName();
-            if (field.getType().isEnum() || fieldName.contains("$VALUES") || "ordinal".equals(fieldName) || field.getDeclaringClass().equals(Enum.class) && "name".equals(fieldName)) {
+            if (field.getType().isEnum() || fieldName.contains("$VALUES") || StrUtil.equalsAny(fieldName, "name", "hash", "ordinal") && field.getDeclaringClass().equals(Enum.class)) {
                 // 跳过一些特殊字段
                 continue;
             }
@@ -43,10 +43,6 @@ public class EnumUtil extends cn.hutool.v7.core.util.EnumUtil {
                 }
             }
         }
-        try {
-            return fromString(enumClass, value.toString());
-        } catch (Exception ignored) {
-        }
-        return null;
+        return fromStringQuietly(enumClass, value.toString());
     }
 }
