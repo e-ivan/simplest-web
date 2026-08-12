@@ -124,14 +124,4 @@ public class JwtUtil {
         return "dGhpcy1pcy1hLXNlY3JldC1rZXktZm9yLWhzMjU2LWFsZ29yaXRobQ==";
     }
 
-    /**
-     * 自定义签名
-     *
-     * @return
-     */
-    private static MacAlgorithm getSignatureAlgorithm() {
-        return Jwts.SIG.HS256;
-    }
-
-
 }
