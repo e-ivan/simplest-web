@@ -25,6 +25,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.*;
 
@@ -43,7 +44,7 @@ public class ExceptionHandler {
      * 验证 单个参数类型
      */
     @org.springframework.web.bind.annotation.ExceptionHandler(ConstraintViolationException.class)
-    public Result ConstraintViolationExceptionHandler(ConstraintViolationException e, HttpServletRequest request) {
+    public Result constraintViolationExceptionHandler(ConstraintViolationException e, HttpServletRequest request) {
         List errorList = new ArrayList<>();
         Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
         for (ConstraintViolation<?> violation : violations) {
@@ -64,8 +65,13 @@ public class ExceptionHandler {
      * @return
      */
     @org.springframework.web.bind.annotation.ExceptionHandler(NoHandlerFoundException.class)
-    public Result error(NoHandlerFoundException e) {
+    public Result noHandlerFoundException(NoHandlerFoundException e) {
         return Result.buildFailure(HttpStatus.NOT_FOUND, e.getRequestURL());
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(NoResourceFoundException.class)
+    public Result noResourceFoundException(NoResourceFoundException e) {
+        return Result.buildFailure(HttpStatus.NOT_FOUND, e.getResourcePath());
     }
 
     /**
@@ -94,17 +100,17 @@ public class ExceptionHandler {
      * @return
      */
     @org.springframework.web.bind.annotation.ExceptionHandler(HttpMessageNotReadableException.class)
-    public Result HttpMessageNotReadableException(HttpMessageNotReadableException e,HttpServletRequest request) {
+    public Result httpMessageNotReadableException(HttpMessageNotReadableException e, HttpServletRequest request) {
         request.setAttribute("argument_error", e.getMessage());
         return Result.buildFailure(HttpStatus.INVALID_ARGUMENT.getCode(),
-                StrUtil.format(HttpStatus.INVALID_ARGUMENT.getMessage(),e.getMessage()), ExceptionUtil.stacktraceToString(e));
+                StrUtil.format(HttpStatus.INVALID_ARGUMENT.getMessage(), e.getMessage()), ExceptionUtil.stacktraceToString(e));
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(LimitAccessException.class)
-    public Result LimitAccessExceptionException(LimitAccessException e,HttpServletRequest request) {
+    public Result limitAccessExceptionException(LimitAccessException e, HttpServletRequest request) {
         request.setAttribute("argument_error", e.getMessage());
         return Result.buildFailure(HttpStatus.REQUEST_TIMEOUT.getCode(),
-                StrUtil.format(HttpStatus.REQUEST_TIMEOUT.getMessage() , e.getMessage()),ExceptionUtil.stacktraceToString(e));
+                StrUtil.format(HttpStatus.REQUEST_TIMEOUT.getMessage(), e.getMessage()), ExceptionUtil.stacktraceToString(e));
     }
 
 
@@ -115,10 +121,10 @@ public class ExceptionHandler {
      * @return
      */
     @org.springframework.web.bind.annotation.ExceptionHandler(CacheException.class)
-    public Result CacheException(CacheException e,HttpServletRequest request) {
+    public Result cacheException(CacheException e, HttpServletRequest request) {
         request.setAttribute("argument_error", e.getMessage());
         return Result.buildFailure(HttpStatus.CACHE_EXCEPTION.getCode(),
-                StrUtil.format(HttpStatus.CACHE_EXCEPTION.getMessage() , e.getMessage()), ExceptionUtil.stacktraceToString(e));
+                StrUtil.format(HttpStatus.CACHE_EXCEPTION.getMessage(), e.getMessage()), ExceptionUtil.stacktraceToString(e));
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)
@@ -158,7 +164,7 @@ public class ExceptionHandler {
      * 验证  对象类型参数
      */
     @org.springframework.web.bind.annotation.ExceptionHandler(BindException.class)
-    public Result BindExceptionHandler(BindException e, HttpServletRequest request) {
+    public Result bindExceptionHandler(BindException e, HttpServletRequest request) {
         return buildBindResult(e, request);
     }
 

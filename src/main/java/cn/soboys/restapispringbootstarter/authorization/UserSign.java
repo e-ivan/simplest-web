@@ -1,9 +1,6 @@
 package cn.soboys.restapispringbootstarter.authorization;
 
 
-import cn.hutool.v7.core.codec.binary.Base64;
-import io.jsonwebtoken.Jwts;
-
 /**
  * @author 公众号 程序员三时
  * @version 1.0
