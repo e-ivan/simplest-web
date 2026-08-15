@@ -5,6 +5,7 @@ import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.servers.Server;
 import io.swagger.v3.oas.models.tags.Tag;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -51,12 +52,18 @@ public class SpringDocProperties {
     private Components components = null;
 
     /**
+     * 服务器
+     */
+    @NestedConfigurationProperty
+    private List<Server> servers;
+
+    /**
      * <p>
      * 文档的基础属性信息
      * </p>
      *
      * @see io.swagger.v3.oas.models.info.Info
-     *
+     * <p>
      * 为了 springboot 自动生产配置提示信息，所以这里复制一个类出来
      */
     @Data

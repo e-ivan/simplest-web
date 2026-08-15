@@ -12,10 +12,12 @@ import cn.soboys.restapispringbootstarter.utils.StrUtil;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.io.Serial;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,11 +29,12 @@ import java.util.stream.Stream;
  * @date 2023/6/26 09:08
  * @webSite https://github.com/coder-amiao
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Slf4j
 //设置属性返回顺序
-@JsonPropertyOrder({"success", "code","msg","requestId","timestamp","data"})
-public class Result<T> extends BaseObj{
+@JsonPropertyOrder({"success", "code", "msg", "requestId", "timestamp", "data"})
+public class Result<T> extends BaseObj {
 
     public static final String SUCCESS_CODE = "OK";
     public static final String ERROR_CODE = "FAIL";
@@ -41,10 +44,10 @@ public class Result<T> extends BaseObj{
     private static final String I18N_HEADER = "Lang";
 
 
-
-
     private static final I18NMessage i18NMessage = SpringUtil.getBean(I18NMessage.class);
     private static final DefaultMessage defaultMessage = SpringUtil.getBean(DefaultMessage.class);
+    @Serial
+    private static final long serialVersionUID = 7616601894609396050L;
 
 
     private Boolean success;
@@ -53,9 +56,9 @@ public class Result<T> extends BaseObj{
 
     private String msg;
 
-    private String requestId= IdUtil.nanoId(20);
+    private final String requestId = IdUtil.nanoId(20);
 
-    private String timestamp = DateUtil.formatNow();
+    private final String timestamp = DateUtil.formatNow();
 
 
     private T data;

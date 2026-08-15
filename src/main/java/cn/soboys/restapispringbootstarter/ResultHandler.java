@@ -182,7 +182,6 @@ public class ResultHandler implements ResponseBodyAdvice<Object> {
                 resultPage.setCode(r.getCode());
                 resultPage.setMsg(r.getMsg());
                 resultPage.setSuccess(r.getSuccess());
-                resultPage.setTimestamp(r.getTimestamp());
                 resultPage.setData(resultPage.getPageData());
                 resultPage.setPageData(null);
                 Map rPage = BeanUtil.beanToMap(resultPage, false, true);

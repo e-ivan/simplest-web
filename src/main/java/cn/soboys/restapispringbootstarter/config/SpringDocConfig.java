@@ -53,6 +53,7 @@ public class SpringDocConfig {
         openApi.externalDocs(properties.getExternalDocs());
         openApi.tags(properties.getTags());
         openApi.paths(properties.getPaths());
+        openApi.servers(properties.getServers());
         if (properties.getComponents() != null) {
             openApi.components(properties.getComponents());
             Set<String> keySet = properties.getComponents().getSecuritySchemes().keySet();
