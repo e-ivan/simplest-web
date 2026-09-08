@@ -66,7 +66,7 @@ public class SpringCacheConfig {
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(keySerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(valueSerializer(objectMapper)));
 
-        TtlRedisCacheManager manager = new TtlRedisCacheManager(RedisCacheWriter.lockingRedisCacheWriter(redisConnectionFactory),
+        TtlRedisCacheManager manager = new TtlRedisCacheManager(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory),
                 // 默认缓存配置
                 config);
         manager.setTransactionAware(true);

@@ -86,16 +86,18 @@ public class LimitAspect extends BaseAspectSupport {
      *
      * @return lua脚本
      */
-    private String buildLuaScript() {
-        return "local c" +
-                "\nc = redis.call('get',KEYS[1])" +
-                "\nif c and tonumber(c) > tonumber(ARGV[1]) then" +
-                "\nreturn c;" +
-                "\nend" +
-                "\nc = redis.call('incr',KEYS[1])" +
-                "\nif tonumber(c) == 1 then" +
-                "\nredis.call('expire',KEYS[1],ARGV[2])" +
-                "\nend" +
-                "\nreturn c;";
+    protected String buildLuaScript() {
+        return """ 
+                 local c
+                 c = redis.call('get',KEYS[1])
+                 if c and tonumber(c) > tonumber(ARGV[1]) then
+                 return c;
+                 end
+                 c = redis.call('incr',KEYS[1])
+                 if tonumber(c) == 1 then
+                 redis.call('expire',KEYS[1],ARGV[2])
+                 end
+                 return c;
+                """;
     }
 }
