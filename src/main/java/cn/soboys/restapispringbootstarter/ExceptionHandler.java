@@ -17,13 +17,16 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.method.ParameterValidationResult;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
@@ -57,6 +60,24 @@ public class ExceptionHandler {
                 StrUtil.format(HttpStatus.INVALID_ARGUMENT.getMessage(), CollUtil.join(errorList, ";")));
     }
 
+
+    /**
+     * 验证 方法参数级别校验（如 @Validated + @RequestParam 上的约束注解）
+     */
+    @org.springframework.web.bind.annotation.ExceptionHandler(HandlerMethodValidationException.class)
+    public Result handlerMethodValidationExceptionHandler(HandlerMethodValidationException e, HttpServletRequest request) {
+        List<String> errorList = new ArrayList<>();
+
+        for (ParameterValidationResult result : e.getParameterValidationResults()) {
+            String paramName = result.getMethodParameter().getParameterName();
+            for (MessageSourceResolvable error : result.getResolvableErrors()) {
+                String message = error.getDefaultMessage();
+                errorList.add(paramName + message);
+            }
+        }
+        request.setAttribute("argument_error", CollUtil.join(errorList, ";"));
+        return Result.buildFailure(HttpStatus.INVALID_ARGUMENT.getCode(), "参数缺失");
+    }
 
     /**
      * 接口不存在
